@@ -20,10 +20,7 @@ import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 
 
 
-class MainActivity : AppCompatActivity(), OnMapReadyCallback {
-    override fun onMapReady(p0: GoogleMap?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+class MainActivity : AppCompatActivity() {
 
     private val MAPVIEW_BUNDLE_KEY: String? = "MapViewBundleKey"
     var isOpen = false
@@ -40,9 +37,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
         setSupportActionBar(toolbar)
 
         //fab.setBackgroundColor(Color.parseColor("#868686"))
-
-        mMapView = findViewById(R.id.mapView)
-        initGoogleMap(savedInstanceState);
 
 
         var fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open)
@@ -95,19 +89,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
 
     }
 
-    private fun initGoogleMap(savedInstanceState: Bundle?) {
-        // *** IMPORTANT ***
-        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
-        // objects or sub-Bundles.
-        var mapViewBundle: Bundle? = null
-        if (savedInstanceState != null) {
-            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY)
-        }
-
-        mMapView.onCreate(mapViewBundle)
-
-        mMapView.getMapAsync(this)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
