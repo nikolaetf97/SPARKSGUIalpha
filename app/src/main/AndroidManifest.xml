@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.sparks">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,6 +27,8 @@
         <activity android:name=".About" />
         <activity android:name=".SelectParkingForm"
                   android:parentActivityName=".MainActivity"/>
+        <meta-data android:name="com.here.sdk.access_key_id" android:value="tzJkbB8JNgzkPbklWhGSgg" />
+        <meta-data android:name="com.here.sdk.access_key_secret" android:value="rGGtjTQaGuZAcJ10reo0YYCF56pC9oAMH9CQQap3AhOV49AaZ0saf_p7nUVCjrwUoxozXxTq3fTeK6kgfsPKHg" />
     </application>
 
 </manifest>

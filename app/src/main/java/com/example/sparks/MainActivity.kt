@@ -3,28 +3,24 @@ package com.example.sparks
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.view.CollapsibleActionView
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.maps.GoogleMap
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.here.sdk.core.GeoCoordinates
+import com.here.sdk.mapviewlite.MapStyle
+import com.here.sdk.mapviewlite.MapViewLite
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
-import androidx.core.app.ComponentActivity
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
-
 
 
 class MainActivity : AppCompatActivity() {
-
-    private val MAPVIEW_BUNDLE_KEY: String? = "MapViewBundleKey"
     var isOpen = false
 
+    private var mapView: MapViewLite? = null
 
     private lateinit var mMapView: MapView
     private lateinit var mRandom: java.util.Random
@@ -36,8 +32,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        //fab.setBackgroundColor(Color.parseColor("#868686"))
-
 
         var fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open)
         var fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close)
@@ -46,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
             if (isOpen){
                 fab_edit_1.startAnimation(fabClose)
                 fab_edit_2.startAnimation(fabClose)
@@ -66,8 +60,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fab_edit_1.setOnClickListener{ view ->
-                startActivity(Intent(this, SelectParkingForm::class.java))
+        fab_edit_1.setOnClickListener{
+            startActivity(Intent(this, SelectParkingForm::class.java))
         }
 
         mHandler = Handler()
@@ -86,9 +80,39 @@ class MainActivity : AppCompatActivity() {
             android.R.color.holo_orange_dark,
             android.R.color.holo_red_dark)
 
+        var mapViewVar: MapViewLite? = findViewById(R.id.map_view)
+
+
+        mapViewVar?.onCreate(savedInstanceState)
+        mapViewVar?.getMapScene()?.loadScene(
+            MapStyle.NORMAL_DAY
+        ) { errorCode ->
+            if (errorCode == null) {
+                mapViewVar.getCamera().target = GeoCoordinates(52.530932, 13.384915)
+                mapViewVar.getCamera().zoomLevel = 14.0
+            } else {
+                Log.d(FragmentActivity.UI_MODE_SERVICE, "onLoadScene failed: $errorCode")
+            }
+        }
+
+        mapView = mapViewVar
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        mapView?.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView?.onResume()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView?.onDestroy()
+    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.

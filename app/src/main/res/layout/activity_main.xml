@@ -12,13 +12,11 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="366dp"
-        android:layout_height="250dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="70dp"
-        android:layout_marginRight="20dp" />
+    <com.here.sdk.mapviewlite.MapViewLite
+        android:id="@+id/map_view"
+        android:layout_width="match_parent"
+        android:layout_height="240dp"
+        android:layout_marginTop="70dp"></com.here.sdk.mapviewlite.MapViewLite>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_edit_2"
