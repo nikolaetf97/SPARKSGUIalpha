@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SPARKS</string>
+    <string name="action_settings">Settings</string>
+    <string name="nameValue" />
+    <string name="name">name</string>
+    <string name="hint1">Broj registarskih tablica: </string>
+    <string name="hint2">Izaberite vrijeme: </string>
+</resources>
