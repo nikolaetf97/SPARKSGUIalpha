@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mMapView: MapView
     private lateinit var mRandom: java.util.Random
     private lateinit var mHandler: Handler
-    private lateinit var mRunnable:Runnable
+    private lateinit var mRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,19 +36,19 @@ class MainActivity : AppCompatActivity() {
         var fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open)
         var fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close)
         var rClockWise = AnimationUtils.loadAnimation(this, R.anim.rotate_clockwise)
-        var rCounterClockWise= AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise)
+        var rCounterClockWise = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise)
 
 
 
         fab.setOnClickListener {
-            if (isOpen){
+            if (isOpen) {
                 fab_edit_1.startAnimation(fabClose)
                 fab_edit_2.startAnimation(fabClose)
 
                 fab.startAnimation(rClockWise)
                 isOpen = false
 
-            } else{
+            } else {
                 fab_edit_1.startAnimation(fabOpen)
                 fab_edit_2.startAnimation(fabOpen)
 
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fab_edit_1.setOnClickListener{
+        fab_edit_1.setOnClickListener {
             startActivity(Intent(this, SelectParkingForm::class.java))
         }
 
@@ -73,12 +73,14 @@ class MainActivity : AppCompatActivity() {
                 swipeContainer.isRefreshing = false
             }
 
-            mHandler.postDelayed(mRunnable, ((Random().nextInt(4) + 1)*1000).toLong())
+            mHandler.postDelayed(mRunnable, ((Random().nextInt(4) + 1) * 1000).toLong())
         }
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+        swipeContainer.setColorSchemeResources(
+            android.R.color.holo_blue_bright,
             android.R.color.holo_green_dark,
             android.R.color.holo_orange_dark,
-            android.R.color.holo_red_dark)
+            android.R.color.holo_red_dark
+        )
 
         var mapViewVar: MapViewLite? = findViewById(R.id.map_view)
 
@@ -125,8 +127,14 @@ class MainActivity : AppCompatActivity() {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_settings -> {
+                this.startActivity(Intent(this, SettingsActivity::class.java))
+                return true
+            }
+
             else -> super.onOptionsItemSelected(item)
+
+
         }
     }
 }

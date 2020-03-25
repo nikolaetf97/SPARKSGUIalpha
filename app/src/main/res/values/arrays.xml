@@ -1,0 +1,24 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="choose_languages">
+        <item>Engleski</item>
+        <item>Srpski</item>
+    </string-array>
+
+    <string-array name="choose_zone">
+        <item>Zona 0</item>
+        <item>Zona 1</item>
+        <item>Zona 2</item>
+        <item>Sve</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+</resources>

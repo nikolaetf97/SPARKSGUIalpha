@@ -1,0 +1,60 @@
+<!--
+  ~ Copyright 2018 The app Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory app:title="Opšte upravljanje">
+        <ListPreference
+            app:defaultValue="@string/choose_language"
+            app:entries="@array/choose_languages"
+            app:entryValues="@array/reply_values"
+            app:key="language"
+            app:title="@string/language_title"
+            app:useSimpleSummaryProvider="true" />
+        <ListPreference
+            app:defaultValue="Sve"
+            app:entries="@array/choose_zone"
+            app:entryValues="@array/choose_zone"
+            app:key="zone"
+            app:title="@string/zone_title"
+            app:useSimpleSummaryProvider="true" />
+
+
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="Upravljanje informacijama">
+        <EditTextPreference
+            app:icon="@drawable/ic_report_black_24dp"
+            app:key="signature"
+            app:title="@string/warning_title"
+            />
+        <Preference
+            app:icon="@drawable/ic_local_library_black_24dp"
+            app:key="uputstvo"
+            app:title="@string/how_to_use"
+            />
+
+        <Preference
+            app:icon="@drawable/ic_info_outline_black_24dp"
+            app:key="o aplikaciji"
+            app:title="@string/about_app"
+            />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
