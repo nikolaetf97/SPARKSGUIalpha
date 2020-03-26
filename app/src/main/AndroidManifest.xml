@@ -31,7 +31,6 @@
         <activity android:name=".SelectParkingForm"
                   android:parentActivityName=".MainActivity"/>
         <activity android:name=".SettingsForm" />
-        <activity android:name=".About" />
         <meta-data android:name="com.here.sdk.access_key_id" android:value="tzJkbB8JNgzkPbklWhGSgg" />
         <meta-data android:name="com.here.sdk.access_key_secret" android:value="rGGtjTQaGuZAcJ10reo0YYCF56pC9oAMH9CQQap3AhOV49AaZ0saf_p7nUVCjrwUoxozXxTq3fTeK6kgfsPKHg" />
     </application>
