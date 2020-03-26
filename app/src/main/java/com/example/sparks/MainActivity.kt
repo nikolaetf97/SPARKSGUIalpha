@@ -19,7 +19,7 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
     var isOpen = false
-    var Marko=true
+    var Marko=false
     private var mapView: MapViewLite? = null
 
     private lateinit var mMapView: MapView
