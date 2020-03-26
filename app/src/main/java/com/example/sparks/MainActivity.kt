@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
             MapStyle.NORMAL_DAY
         ) { errorCode ->
             if (errorCode == null) {
-                mapViewVar.getCamera().target = GeoCoordinates(52.530932, 13.384915)
+                mapViewVar.getCamera().target = GeoCoordinates(44.7722, 17.1910)
                 mapViewVar.getCamera().zoomLevel = 14.0
             } else {
                 Log.d(FragmentActivity.UI_MODE_SERVICE, "onLoadScene failed: $errorCode")
