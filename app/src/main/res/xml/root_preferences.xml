@@ -19,6 +19,7 @@
     <PreferenceCategory app:title="Opšte upravljanje">
         <ListPreference
             app:defaultValue="@string/choose_language"
+            app:icon="@drawable/ic_language_black_24dp"
             app:entries="@array/choose_languages"
             app:entryValues="@array/reply_values"
             app:key="language"
@@ -26,13 +27,21 @@
             app:useSimpleSummaryProvider="true" />
         <ListPreference
             app:defaultValue="Sve"
+            app:icon="@drawable/ic_map_black_24dp"
             app:entries="@array/choose_zone"
             app:entryValues="@array/choose_zone"
             app:key="zone"
             app:title="@string/zone_title"
             app:useSimpleSummaryProvider="true" />
 
-
+        <ListPreference
+            app:defaultValue="Plava"
+            app:icon="@drawable/ic_color_lens_black_24dp"
+            app:entries="@array/choose_color"
+            app:entryValues="@array/choose_color"
+            app:key="color"
+            app:title="@string/color_title"
+            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

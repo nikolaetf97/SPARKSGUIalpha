@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    layout_height="wrap_content">
+
+        <RelativeLayout
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/icon_parking"
+                android:layout_width="48dp"
+
+                android:layout_height="48dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="12dp"
+                app:srcCompat="@drawable/parking_pin_large" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_toRightOf="@+id/icon_parking"
+            android:id="@+id/tv_period"
+            android:layout_alignParentTop="true"
+            android:text="Period zauzeća"
+            android:textSize="20sp"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_location"
+            android:text="Ime parkinga"
+            android:textSize="20sp"
+            android:layout_toRightOf="@+id/icon_parking"
+            android:layout_below="@+id/tv_period"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:id="@+id/cost"
+            android:layout_toRightOf="@+id/icon_parking"
+            android:layout_below="@+id/tv_location"
+            android:textSize="20sp"
+            android:text="Cijena"
+            android:layout_height="wrap_content" />
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>

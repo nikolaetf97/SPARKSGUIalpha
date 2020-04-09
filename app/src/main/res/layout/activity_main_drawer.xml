@@ -14,10 +14,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         >
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeContainer"
-            android:layout_width="match_parent"
-            android:layout_height="80dp">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/drawer_toolbar"
             android:layout_width="match_parent"
@@ -26,21 +23,24 @@
             android:elevation="4dp"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeContainer"
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
 
-
-                <!--com.google.android.material.appbar.AppBarLayout
+                <com.google.android.material.appbar.AppBarLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:theme="@style/AppTheme.AppBarOverlay">
 
-                </com.google.android.material.appbar.AppBarLayout!-->
-
+                </com.google.android.material.appbar.AppBarLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab_edit_1"
@@ -57,7 +57,7 @@
                 app:fabSize="mini"
                 app:layout_anchorGravity="bottom|center"
                 app:pressedTranslationZ="12dp"
-                app:srcCompat="@drawable/ic_info_outline_black_24dp"
+                app:srcCompat="@drawable/ic_add_white_24dp"
                 tools:layout_marginRight="0dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -74,7 +74,7 @@
                 app:fabSize="mini"
                 app:layout_anchorGravity="bottom|center"
                 app:pressedTranslationZ="12dp"
-                app:srcCompat="@drawable/ic_access_time_black_24dp" />
+                app:srcCompat="@drawable/ic_add_white_24dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
@@ -87,32 +87,12 @@
                 app:pressedTranslationZ="12dp"
                 app:srcCompat="@drawable/img_218400" />
 
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="240dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="460dp"
-                android:gravity="bottom|start"
-                android:layout_marginLeft="10dp"
-                android:text="Naziv trenutno odabrane destinacije"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_marginLeft="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="520dp"
-                android:gravity="bottom|end"
-                android:text="Trenutno zauzeće (dodirni da osvježiš)"
-                android:textSize="18sp" />
-
             <com.here.sdk.mapviewlite.MapViewLite
                 android:id="@+id/map_view_main"
                 android:layout_width="match_parent"
-                android:layout_height="420dp"
+                android:layout_height="300dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="130dp"
                 android:layout_marginRight="10dp"></com.here.sdk.mapviewlite.MapViewLite>
 
         </FrameLayout>

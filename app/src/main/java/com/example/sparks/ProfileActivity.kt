@@ -2,18 +2,24 @@ package com.example.sparks
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.widget.EditText
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
+import com.here.sdk.core.GeoCoordinates
+import com.here.sdk.mapviewlite.*
 import kotlinx.android.synthetic.main.dialog_logs.view.*
 
-class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class ProfileActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         if(p0.itemId != itemId) {
             when (p0.itemId) {
@@ -66,6 +72,17 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
                     logsLayout.recycler_view.adapter= LogDataAdapter(this, Supplier.logData)
                     logsDialog.setPositiveButton("Ok"){ dialog, _ ->dialog.dismiss() }
                     logsDialog.show()
+                }
+
+                R.id.nav_logs -> {
+                    val logsLayout = layoutInflater.inflate(R.layout.dialog_logs, null)
+                    val logsDialog = AlertDialog.Builder(this)
+                    logsDialog.setView(logsLayout)
+                    logsDialog.setTitle("Logovi")
+                    logsLayout.recycler_view.layoutManager = LinearLayoutManager(this)
+                    logsLayout.recycler_view.adapter= LogDataAdapter(this, Supplier.logData)
+                    logsDialog.setPositiveButton("Ok"){ dialog, _ ->dialog.dismiss() }
+                    logsDialog.show()
                     return false
                 }
             }
@@ -74,11 +91,11 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
             return false
     }
 
-    private val itemId = R.id.nav_settings
+    private val itemId = R.id.nav_profile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        setContentView(R.layout.activity_profile)
         var toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
         setSupportActionBar(toolbar)
 
@@ -88,7 +105,7 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         naviationView.setNavigationItemSelectedListener(this)
 
-        var toggle: ActionBarDrawerToggle = ActionBarDrawerToggle(this, drawer, toolbar,
+        var toggle = ActionBarDrawerToggle(this, drawer, toolbar,
             R.string.navigation_bar_open, R.string.navigation_bar_close)
 
         drawer.addDrawerListener(toggle)
@@ -97,7 +114,7 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.settings, SettingsFragment())
+            .replace(R.id.profile, ProfileFragment())
             .commit()
 
     }

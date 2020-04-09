@@ -1,4 +1,7 @@
 <resources>
+
+    <string name="navigation_bar_open">Open navigation bar</string>
+    <string name="navigation_bar_close">Close navigation bar</string>
     <string name="app_name">SPARKS</string>
     <string name="action_settings">Settings</string>
     <string name="nameValue" />
@@ -32,4 +35,23 @@
     </string>
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="home_string">Početni ekran</string>
+    <string name="profile_string">Podešavanja profila</string>
+    <string name="settings_string">Podešavanja</string>
+    <string name="manual_string">Uputstvo za upotrebu</string>
+    <string name="report_string">Prijavite grešku</string>
+    <string name="about_string">O aplikaciji</string>
+    <string name="sparks">SPARKS</string>
+    <string name="welcome">Dobrodošli</string>
+    <string name="misc">Ostalo</string>
+    <string name="error_info">Unesite opis greške</string>
+    <string name="color_title">Izaberite glavnu boju aplikacije</string>
+    <string name="parking1">Parking1</string>
+    <string name="parking3">Parking3</string>
+    <string name="parking2">Parking2</string>
+    <string name="logovi">Logovi</string>
+    <string name="half_hour">30min</string>
+    <string name="one_hour">1h</string>
+    <string name="two_hours">2h</string>
+    <string name="three_hours">3h</string>
+    <string name="four_hours">4h</string>
 </resources>

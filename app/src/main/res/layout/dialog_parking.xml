@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RadioButton
+            android:id="@+id/parking1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/parking1" />
+
+        <RadioButton
+            android:id="@+id/parking2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/parking2" />
+
+        <RadioButton
+            android:id="@+id/parking3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/parking3" />
+
+        <RadioButton
+            android:id="@+id/parking4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Parking4" />
+
+        <RadioButton
+            android:id="@+id/parking5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Parking5" />
+    </RadioGroup>
+</LinearLayout>

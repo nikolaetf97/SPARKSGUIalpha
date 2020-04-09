@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <RadioButton
+            android:id="@+id/extend1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/half_hour" />
+
+        <RadioButton
+            android:id="@+id/extend2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/one_hour" />
+
+        <RadioButton
+            android:id="@+id/extend3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/two_hours" />
+
+        <RadioButton
+            android:id="@+id/extend4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/three_hours" />
+
+        <RadioButton
+            android:id="@+id/extend5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/four_hours" />
+    </RadioGroup>
+</LinearLayout>
