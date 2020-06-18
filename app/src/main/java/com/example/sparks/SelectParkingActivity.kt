@@ -1,10 +1,12 @@
 package com.example.sparks
 
 import android.content.Intent
+import android.graphics.PointF
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -12,8 +14,18 @@ import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
+import com.here.android.mpa.common.*
+import com.here.android.mpa.mapping.AndroidXMapFragment
+import com.here.android.mpa.mapping.Map
+import com.here.android.mpa.mapping.MapGesture
+import com.here.android.mpa.mapping.MapMarker
+import com.here.android.mpa.mapping.MapRoute
+import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_parking.*
 import kotlinx.android.synthetic.main.dialog_logs.view.*
+import java.io.File
+import java.lang.ref.WeakReference
+import java.util.*
 
 class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -74,6 +86,15 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         return true
     }
 
+    private var  lastPos: MapMarker?= null
+    private var currPos: GeoCoordinate? = null
+    private var currRoute: MapRoute? = null
+    private var map: Map? = null
+    private var mapFragment: AndroidXMapFragment? = null
+    private lateinit var posManager: PositioningManager
+    private lateinit var router: CoreRouter
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parking)
@@ -116,5 +137,189 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             builder.show()
         }
 
+        routeParking.setOnClickListener { showRoute() }
+
+        initialize()
+
     }
+
+    private fun routeListenerFactory(): CoreRouter.Listener{
+        return object: CoreRouter.Listener{
+            override fun onCalculateRouteFinished(p0: MutableList<RouteResult>?, p1: RoutingError) {
+                if(p1 == RoutingError.NONE){
+
+                    if(currRoute != null)
+                        map!!.removeMapObject(currRoute!!)
+
+                    currRoute = MapRoute(p0!![0].route)
+
+                    map!!.addMapObject(currRoute!!)
+                }
+            }
+
+            override fun onProgress(p0: Int) {}
+
+        }
+
+    }
+
+    private fun markerListenerFactory(): MapGesture.OnGestureListener{
+        return object: MapGesture.OnGestureListener{
+
+            override fun onLongPressRelease() {}
+
+            override fun onRotateEvent(p0: Float): Boolean {
+                return false
+            }
+
+            override fun onMultiFingerManipulationStart() {}
+
+            override fun onPinchLocked() {}
+
+            override fun onPinchZoomEvent(p0: Float, p1: PointF): Boolean {
+                return false
+            }
+
+            override fun onTapEvent(p0: PointF): Boolean {
+                if(lastPos != null)
+                    map!!.removeMapObject(lastPos!!)
+
+                val image = Image()
+                image.setImageResource(R.drawable.parking_pin_large)
+
+                lastPos = MapMarker(map!!.pixelToGeo(p0)!!, image)
+                map?.addMapObject(lastPos!!)
+
+                return true
+            }
+
+            override fun onPanStart() {}
+
+            override fun onMultiFingerManipulationEnd() {}
+
+            override fun onDoubleTapEvent(p0: PointF): Boolean {
+                return false
+            }
+
+            override fun onPanEnd() {}
+
+            override fun onTiltEvent(p0: Float): Boolean {
+                return false
+            }
+
+            override fun onMapObjectsSelected(p0: MutableList<ViewObject>): Boolean {
+                return false
+            }
+
+            override fun onRotateLocked() {}
+
+            override fun onLongPressEvent(p0: PointF): Boolean {
+                return false
+            }
+
+            override fun onTwoFingerTapEvent(p0: PointF): Boolean {
+                return false
+            }
+        }
+
+    }
+
+    private fun showRoute() {
+        if(lastPos != null){
+            val coordinate: GeoCoordinate = lastPos!!.coordinate
+
+            val routePlan = RoutePlan()
+
+            routePlan.addWaypoint(RouteWaypoint(currPos!!))
+
+            routePlan.addWaypoint(RouteWaypoint(coordinate))
+
+            val routeOptions = RouteOptions()
+
+            routeOptions.transportMode = RouteOptions.TransportMode.CAR
+            routeOptions.routeType = RouteOptions.Type.BALANCED
+
+            routePlan.routeOptions = routeOptions
+
+            router.calculateRoute(routePlan, routeListenerFactory())
+        }
+    }
+
+    private fun initialize() {
+
+        mapFragment = supportFragmentManager.findFragmentById(R.id.map_view_main) as AndroidXMapFragment?
+
+        var success:Boolean = MapSettings.setIsolatedDiskCacheRootPath(
+            applicationContext.getExternalFilesDir(null)!!.absolutePath + File.separator + ".here-maps"
+        )
+
+        if(!success)
+            Toast.makeText(applicationContext, "Unable to set isolated disk cache path",
+                Toast.LENGTH_LONG).show()
+       // else{
+            mapFragment?.init{
+                if(it == OnEngineInitListener.Error.NONE){
+                    map = mapFragment!!.map
+                    map!!.setCenter(GeoCoordinate(49.196261, -123.004773, 0.0), Map.Animation.NONE)
+                    posManager = PositioningManager.getInstance()
+                    posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
+
+                    // Define positioning listener
+                    // Define positioning listener
+
+                    val positionListener: PositioningManager.OnPositionChangedListener =
+                        object : PositioningManager.OnPositionChangedListener {
+                            override fun onPositionUpdated(
+                                method: PositioningManager.LocationMethod,
+                                position: GeoPosition?, isMapMatched: Boolean
+                            ) {
+                                if (position != null) {
+                                    map!!.setCenter(
+                                        position.coordinate,
+                                        Map.Animation.NONE
+
+                                    )
+
+                                    mapFragment!!.positionIndicator!!.isVisible = true
+
+                                    /*Toast.makeText(applicationContext, "Pozicija " + String.format(
+                                        Locale.US, "%.6f, %.6f", position.coordinate.longitude, position.coordinate.latitude)
+                                        , Toast.LENGTH_LONG).show()*/
+                                }
+
+                                currPos = position!!.coordinate
+
+
+
+                            }
+
+                            override fun onPositionFixChanged(
+                                method: PositioningManager.LocationMethod,
+                                status: PositioningManager.LocationStatus
+                            ) {
+                            }
+                        }
+
+                    // Register positioning listener
+
+                    posManager.addListener(
+                        WeakReference(positionListener)
+                    )
+                    map!!.setZoomLevel((map!!.maxZoomLevel + map!!.minZoomLevel) / 2)
+
+
+                    mapFragment!!.mapGesture!!.addOnGestureListener(markerListenerFactory(), 1, false)
+
+                    router = CoreRouter()
+
+                } else
+                    Toast.makeText(applicationContext, "Cannot Initialize Map Fragment" + it.details,
+                        Toast.LENGTH_LONG).show()
+
+            }
+        //}
+
+
+    }
+
 }

@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -61,14 +64,22 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <meta-data android:name="com.here.sdk.access_key_id" android:value="tzJkbB8JNgzkPbklWhGSgg" />
-        <meta-data android:name="com.here.sdk.access_key_secret" android:value="rGGtjTQaGuZAcJ10reo0YYCF56pC9oAMH9CQQap3AhOV49AaZ0saf_p7nUVCjrwUoxozXxTq3fTeK6kgfsPKHg" />
+        <service
+            android:name="com.here.android.mpa.service.MapService"
+            android:label="HereMapService">
+            <intent-filter>
+                <!--Note, action name should not be changed.-->
+                <action android:name="com.here.android.mpa.service.MapService.v3" />
+            </intent-filter>
+        </service>
+
         <meta-data android:name="com.here.android.maps.appid"
             android:value="N0YzQlqH2bVvmxdLsgqi"/>
         <meta-data android:name="com.here.android.maps.apptoken"
             android:value="9wibDiMQ-nx6UTfYfmAlFA"/>
         <meta-data android:name="com.here.android.maps.license.key"
             android:value="VDEkMPxQYtj8KFDwn9um+rnTu10efh307uLaYsypyHeT9m9ezuAiquEeTNS529QTteB+GXL3IvZshqT30DuoJZmzyYswvYlsadhOm6rkU5nLs0KcLw0o1bkT9j0ipHUIwL5N2HX2LnzJHeLQh1jNqjU16kCq1UMOhYC/uggZaft5XsFRpywjgoK5VhnPIeAB1ljBbdpqbMRlMuRgArCSADl1/pH1sPYfuUngC9OIKF1yjrM4xC7KvROQ8pMDkuLAt4ZFJgCyAUlwDP2dFLFMVxyJ7p8rQnHTZS2nLosRPysQEig3vQpIwpNMmuHX0dzUweghN8wYEEdnoBWqQ44vxBnjtiqP9keElc5hxRJry0i+DmfiIMCx3UXxvPgT1fnuEWUplXlDPsr+VE0zasHVfsIL4tQVgNHSh3/15XecesFkOahPktK6BIax8VGhe7K85XDw2FIyYCbxmv5fJ5zN3ZYDmKCJCdP+CFKxM4g4ugqvakIZ+1E8VsHDRnF4oWTFMGIKzSG9r5dwRssjOXfs2T+ob+4mygMggNDeqkxA25GFye3ewfxD8IcDTXCANKu+HkPKcLryQIqUSFVNehYRc5fP2Y1XhV3n7PbhAH+fifi8bpP+eZch8O+kH+7A6GB8mxbRTDDiNNEJG4HSteJc2X3z+HQM4OfmdFJTwxop0dk="/>
+
     </application>
 
 </manifest>

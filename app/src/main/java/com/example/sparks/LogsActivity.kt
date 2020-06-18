@@ -2,11 +2,7 @@ package com.example.sparks
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
-import android.view.animation.AnimationUtils
 import android.widget.EditText
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
@@ -14,13 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentActivity
-import com.google.android.gms.maps.MapView
 import com.google.android.material.navigation.NavigationView
-import com.here.sdk.core.GeoCoordinates
-import com.here.sdk.mapviewlite.*
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.*
 
 
 class LogsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

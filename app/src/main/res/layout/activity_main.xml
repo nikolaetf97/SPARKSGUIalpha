@@ -91,29 +91,44 @@
                 android:id="@+id/textView5"
                 android:layout_width="240dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="460dp"
                 android:gravity="bottom|start"
-                android:layout_marginLeft="10dp"
-                android:text="Naziv trenutno odabrane destinacije"
+                android:text="Parking: KC Hiper Kort Banja Luka"
                 android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textView9"
-                android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="520dp"
                 android:gravity="bottom|end"
-                android:text="Trenutno zauzeće (dodirni da osvježiš)"
+                android:text="Trenutno zauzeće: 21/120"
                 android:textSize="18sp" />
 
-            <com.here.sdk.mapviewlite.MapViewLite
+            <!--com.here.sdk.mapviewlite.MapViewLite
                 android:id="@+id/map_view_main"
                 android:layout_width="match_parent"
                 android:layout_height="420dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginRight="10dp"></com.here.sdk.mapviewlite.MapViewLite>
+                android:layout_marginRight="10dp"></-com.here.sdk.mapviewlite.MapViewLite-->
+
+            <fragment
+                android:id="@+id/mapfragment"
+                class="com.here.android.mpa.mapping.AndroidXMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="420dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
 
         </FrameLayout>
 
