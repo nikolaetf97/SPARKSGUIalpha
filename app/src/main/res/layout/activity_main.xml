@@ -42,71 +42,6 @@
                 </com.google.android.material.appbar.AppBarLayout!-->
 
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_edit_1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="80dp"
-                android:backgroundTint="#2196F3"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="invisible"
-                app:backgroundTint="@color/fabBackground"
-                app:fabSize="mini"
-                app:layout_anchorGravity="bottom|center"
-                app:pressedTranslationZ="12dp"
-                app:srcCompat="@drawable/ic_info_outline_black_24dp"
-                tools:layout_marginRight="0dp" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_edit_2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="130dp"
-                android:backgroundTint="#2196F3"
-                android:clickable="true"
-                android:focusable="true"
-                android:visibility="invisible"
-                app:fabSize="mini"
-                app:layout_anchorGravity="bottom|center"
-                app:pressedTranslationZ="12dp"
-                app:srcCompat="@drawable/ic_access_time_black_24dp" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="184dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="@dimen/fab_margin"
-                android:backgroundTint="#2196F3"
-                app:borderWidth="0dp"
-                app:pressedTranslationZ="12dp"
-                app:srcCompat="@drawable/img_218400" />
-
-            <TextView
-                android:id="@+id/textView5"
-                android:layout_width="240dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="460dp"
-                android:gravity="bottom|start"
-                android:text="Parking: KC Hiper Kort Banja Luka"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="520dp"
-                android:gravity="bottom|end"
-                android:text="Trenutno zauzeće: 21/120"
-                android:textSize="18sp" />
-
             <!--com.here.sdk.mapviewlite.MapViewLite
                 android:id="@+id/map_view_main"
                 android:layout_width="match_parent"
@@ -115,11 +50,22 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="10dp"></-com.here.sdk.mapviewlite.MapViewLite-->
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="384dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_margin="@dimen/fab_margin"
+                android:backgroundTint="#2196F3"
+                app:borderWidth="0dp"
+                app:pressedTranslationZ="12dp"
+                app:srcCompat="@drawable/img_218400" />
+
             <fragment
                 android:id="@+id/mapfragment"
                 class="com.here.android.mpa.mapping.AndroidXMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="420dp"
+                android:layout_height="528dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginRight="10dp"

@@ -54,4 +54,9 @@
     <string name="two_hours">2h</string>
     <string name="three_hours">3h</string>
     <string name="four_hours">4h</string>
+    <string name="_15min">15min</string>
+    <string name="_10min">10min</string>
+    <string name="_5min">5min</string>
+    <string name="_20min">20min</string>
+    <string name="_30min">30min</string>
 </resources>

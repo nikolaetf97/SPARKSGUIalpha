@@ -3,35 +3,35 @@ package com.example.sparks
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
-import android.os.Handler
+import android.telephony.SmsManager
 import android.view.MenuItem
-import android.view.animation.AnimationUtils
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.gms.maps.MapView
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.here.android.mpa.common.*
 import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_logs.view.*
-import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        if(p0.itemId != itemId) {
+        if (p0.itemId != itemId) {
             when (p0.itemId) {
                 R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
 
@@ -40,34 +40,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
 
                 R.id.user_manual -> {
-                    val alert= AlertDialog.Builder(this)
+                    val alert = AlertDialog.Builder(this)
                     alert.setTitle("Uputstvo za upotrebu")
-                    alert.setMessage("1.Kao korisnik ove aplikacije potrebno je prvo da odaberete destinaciju, kako bi vam aplikacija mogla prikazati informacije o parking mjestima u krugu od 500 " +
-                            "2.odaberite parking, potom je potebno da unesete registarske tablice, vrijeme na koje se parking placa \n" +
-                            "3.nakon toga pritisnite posalji")
-                    alert.setPositiveButton("OK"){dialog, which ->
+                    alert.setMessage(
+                        "1.Kao korisnik ove aplikacije potrebno je prvo da odaberete destinaciju, kako bi vam aplikacija mogla prikazati informacije o parking mjestima u krugu od 500 " +
+                                "2.odaberite parking, potom je potebno da unesete registarske tablice, vrijeme na koje se parking placa \n" +
+                                "3.nakon toga pritisnite posalji"
+                    )
+                    alert.setPositiveButton("OK") { dialog, _ ->
                         dialog.dismiss()
                     }
                     alert.show()
                 }
-                R.id.report_error ->{
+                R.id.report_error -> {
                     val builder = AlertDialog.Builder(this)
                     val inflater = layoutInflater
                     builder.setTitle("Ako ste primjetili ikakve greške u radu aplikacije, molimo vas da ih ukratko opišete")
                     val dialogLayout = inflater.inflate(R.layout.error_dialog, null)
-                    val editText  = dialogLayout.findViewById<EditText>(R.id.editText)
+                    dialogLayout.findViewById<EditText>(R.id.editText)
                     builder.setView(dialogLayout)
-                    builder.setPositiveButton("OK"){dialog, which ->
+                    builder.setPositiveButton("OK") { dialog, _ ->
                         dialog.dismiss()
                     }
                     builder.show()
                 }
 
                 R.id.about -> {
-                    val alert=AlertDialog.Builder(this)
+                    val alert = AlertDialog.Builder(this)
                     alert.setTitle("O aplikaciji")
                     alert.setMessage("Aplikacija SPARK je rezultat urađenog projekta iz predmeta Projektovanje Softvera, omogućava korisniku da lakše pronađe slobodno parking mjesto kao i da mu prikaže mnoštvo korisnih informacija o parkinzima u Banja Luci \n \nVerzija:1.0")
-                    alert.setPositiveButton("OK"){ dialog, _ -> dialog.dismiss() }
+                    alert.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
                     alert.show()
                 }
 
@@ -77,8 +79,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     logsDialog.setView(logsLayout)
                     logsDialog.setTitle("Logovi")
                     logsLayout.recycler_view.layoutManager = LinearLayoutManager(this)
-                    logsLayout.recycler_view.adapter= LogDataAdapter(this, Supplier.logData)
-                    logsDialog.setPositiveButton("Ok"){ dialog, _ ->dialog.dismiss() }
+                    logsLayout.recycler_view.adapter = LogDataAdapter(this, Supplier.logData)
+                    logsDialog.setPositiveButton("Ok") { dialog, _ -> dialog.dismiss() }
                     logsDialog.show()
                     return false
                 }
@@ -89,93 +91,54 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    var isOpen = false
-    var Marko=false
+    companion object {
+        var DESTINATION: MapMarker? = null
+    }
 
-    private var  lastPos: MapMarker?= null
+    private var pastOverlay: MapOverlay? = null
+
+    private var lastPos: MapMarker? = null
     private var currPos: GeoCoordinate? = null
     private var currRoute: MapRoute? = null
     private var map: Map? = null
     private var mapFragment: AndroidXMapFragment? = null
     private lateinit var posManager: PositioningManager
     private lateinit var router: CoreRouter
-
+    private var parkingListener: PositioningManager.OnPositionChangedListener? = null
 
     private lateinit var drawer: DrawerLayout
-    private lateinit var mMapView: MapView
-    private lateinit var mRandom: Random
+    private lateinit var notificationManager: NotificationManagerCompat
+
+    /*private lateinit var mRandom: Random
     private lateinit var mHandler: Handler
-    private lateinit var mRunnable: Runnable
+    private lateinit var mRunnable: Runnable*/
     private val itemId = R.id.nav_home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
+
+        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
         setSupportActionBar(toolbar)
 
         drawer = findViewById(R.id.drawer_layout)
-
-        var naviationView: NavigationView = findViewById(R.id.nav_view_drawer)
-
+        val naviationView: NavigationView = findViewById(R.id.nav_view_drawer)
         naviationView.setNavigationItemSelectedListener(this)
-
-        var toggle: ActionBarDrawerToggle = ActionBarDrawerToggle(this, drawer, toolbar,
-            R.string.navigation_bar_open, R.string.navigation_bar_close)
-
+        val toggle = ActionBarDrawerToggle(
+            this, drawer, toolbar,
+            R.string.navigation_bar_open, R.string.navigation_bar_close
+        )
         drawer.addDrawerListener(toggle)
-
         toggle.syncState()
+        notificationManager = NotificationManagerCompat.from(this)
 
 
-        var fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open)
-        var fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close)
-        var rClockWise = AnimationUtils.loadAnimation(this, R.anim.rotate_clockwise)
-        var rCounterClockWise = AnimationUtils.loadAnimation(this, R.anim.rotate_counterclockwise)
-
-
-
+        fab.isClickable = false
         fab.setOnClickListener {
             startActivity(Intent(this, SelectParkingActivity::class.java))
         }
 
-        fab.setOnLongClickListener {
-            if (isOpen) {
-                fab_edit_1.startAnimation(fabClose)
-                fab_edit_2.startAnimation(fabClose)
-
-                fab.startAnimation(rClockWise)
-                isOpen = false
-
-            } else {
-                fab_edit_1.startAnimation(fabOpen)
-                fab_edit_2.startAnimation(fabOpen)
-
-                fab.startAnimation(rCounterClockWise)
-                isOpen = true
-
-                fab_edit_1.isClickable
-                fab_edit_2.isClickable
-            }
-            true
-        }
-
-        fab_edit_1.setOnClickListener {
-            startActivity(Intent(this, InformationActivity::class.java))
-        }
-
-        fab_edit_2.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            val inflater = layoutInflater
-            builder.setTitle("Izaberite period produženja")
-            val dialogLayout = inflater.inflate(R.layout.dialog_extend, null)
-            builder.setView(dialogLayout)
-            builder.setPositiveButton("Ok"){ dialog, _ ->
-                dialog.dismiss()
-            }
-            builder.show()
-        }
-
+        /*
         mHandler = Handler()
         mRandom = Random()
 
@@ -183,35 +146,70 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             mRunnable = Runnable {
                 swipeContainer.isRefreshing = false
-                showRoute()
+                ShowPreferableSpotsTask(map!!, lastPos!!.coordinate)
+
+                //showRoute()
+                /*val quickExtendIntent = Intent(this, QuickExtendBroadcastReceiver::class.java)
+
+                val goBackToAppPending = PendingIntent.getActivity(this, 0,
+                    Intent(this, MainActivity::class.java), 0)
+
+                val notificationViews = RemoteViews(packageName, R.layout.notification_layout)
+
+                notificationViews.setOnClickPendingIntent(R.id.quickExtendTimer, PendingIntent.getActivity(
+                    this, 0, quickExtendIntent, 0
+                ))
+
+                val notificationBuilder = NotificationCompat.Builder(this, "channel1")
+                    .setSmallIcon(R.drawable.parking_pin_large)
+                    .setContentTitle("Preostalo vrijeme na parkingu")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+                    .setCustomContentView(RemoteViews(
+                        packageName, R.layout.notification_layout
+                    ))
+                    .setContentIntent(goBackToAppPending)
+                    .setOnlyAlertOnce(true)
+                    .setOngoing(true)
+
+                val notification = notificationBuilder.build()
+
+                notificationManager.notify(1, notification)*/
+
+
             }
 
             mHandler.postDelayed(mRunnable, ((Random().nextInt(4) + 1) * 1000).toLong())
         }
         swipeContainer.setColorSchemeResources(
             android.R.color.holo_blue_bright,
-            android.R.color.holo_green_dark,
-            android.R.color.holo_orange_dark,
-            android.R.color.holo_red_dark
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light
         )
+*/
 
         initialize()
+        initGetPSpotsWorker()
+
+        map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
+        PSpotSupplier.addMap(map!!)
     }
 
     override fun onBackPressed() {
-        if(drawer.isDrawerOpen(GravityCompat.START)){
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
     }
 
-    private fun routeListenerFactory(): CoreRouter.Listener{
-        return object: CoreRouter.Listener{
+    private fun routeListenerFactory(): CoreRouter.Listener {
+        return object : CoreRouter.Listener {
             override fun onCalculateRouteFinished(p0: MutableList<RouteResult>?, p1: RoutingError) {
-                if(p1 == RoutingError.NONE){
+                if (p1 == RoutingError.NONE) {
 
-                    if(currRoute != null)
+                    if (currRoute != null)
                         map!!.removeMapObject(currRoute!!)
 
                     currRoute = MapRoute(p0!![0].route)
@@ -221,13 +219,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             override fun onProgress(p0: Int) {}
-
         }
-
     }
 
-    private fun markerListenerFactory(): MapGesture.OnGestureListener{
-        return object: MapGesture.OnGestureListener{
+    private fun markerListenerFactory(): MapGesture.OnGestureListener {
+        return object : MapGesture.OnGestureListener {
 
             override fun onLongPressRelease() {}
 
@@ -244,14 +240,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             override fun onTapEvent(p0: PointF): Boolean {
-                if(lastPos != null)
-                    map!!.removeMapObject(lastPos!!)
+                if (pastOverlay != null)
+                    map!!.removeMapOverlay(pastOverlay!!)
 
-                val image = Image()
-                image.setImageResource(R.drawable.parking_pin_large)
-
-                lastPos = MapMarker(map!!.pixelToGeo(p0)!!, image)
-                map?.addMapObject(lastPos!!)
+                pastOverlay = null
 
                 return true
             }
@@ -260,8 +252,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             override fun onMultiFingerManipulationEnd() {}
 
+            /*
+            *
+            * Na dvoklik se postavlja marker, jer
+            * na jedan klik na marker se dobija info o njemu
+            *
+            * */
+
             override fun onDoubleTapEvent(p0: PointF): Boolean {
-                return false
+                if (lastPos != null)
+                    map!!.removeMapObject(lastPos!!)
+
+                val image = Image()
+                image.setImageResource(R.drawable.parking_pin_large)
+
+                lastPos = MapMarker(map!!.pixelToGeo(p0)!!, image)
+                map?.addMapObject(lastPos!!)
+
+                PSpotSupplier.showNearbyMarkers(3, lastPos!!.coordinate)
+
+                return true
             }
 
             override fun onPanEnd() {}
@@ -271,7 +281,54 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             override fun onMapObjectsSelected(p0: MutableList<ViewObject>): Boolean {
-                return false
+                for (viewObject in p0) {
+                    if ((viewObject as MapObject).type == MapObject.Type.MARKER && (viewObject as MapMarker) != lastPos) {
+                        if (pastOverlay != null)
+                            map!!.removeMapOverlay(pastOverlay!!)
+
+                        val spot =
+                            PSpotSupplier.parkingSports.filter { spot -> spot.getMarker() == viewObject }[0]
+                        val view = layoutInflater.inflate(R.layout.infobubble, null)
+
+                        val icon = view.findViewById<ImageView>(R.id.icon_parking)
+                        icon.setImageResource(viewObject.description!!.toInt())
+
+                        val ocupation = view.findViewById<TextView>(R.id.tv_ocupation)
+                        val placeholder = spot.freeSpace.toString() + "/" + spot.space.toString()
+                        ocupation.text = placeholder
+
+                        val name = view.findViewById<TextView>(R.id.tv_name)
+                        name.text = spot.name
+
+                        val zone = view.findViewById<TextView>(R.id.tv_zone)
+                        zone.text = "1"
+
+                        val button = view.findViewById<Button>(R.id.tv_select)
+
+                        button.setOnClickListener {
+                            val tmpMarker = viewObject
+                            if (DESTINATION != null)
+                                PSpotSupplier.parkingSports
+                                    .filter { spot -> spot.getMarker() == DESTINATION }[0]
+                                    .shrinkMarker()
+                            DESTINATION = tmpMarker
+
+                            PSpotSupplier.parkingSports
+                                .filter { spot -> spot.getMarker() == DESTINATION }[0]
+                                .expandMarker()
+
+                            fab.isClickable = true
+                        }
+                        val overlay = MapOverlay(view, viewObject.coordinate)
+
+                        map!!.addMapOverlay(overlay)
+
+                        pastOverlay = overlay
+
+                        break
+                    }
+                }
+                return true
             }
 
             override fun onRotateLocked() {}
@@ -284,12 +341,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 return false
             }
         }
-
     }
 
     private fun showRoute() {
-        if(lastPos != null){
-            val coordinate:GeoCoordinate = lastPos!!.coordinate
+        if (lastPos != null) {
+            val coordinate: GeoCoordinate = lastPos!!.coordinate
 
             val routePlan = RoutePlan()
 
@@ -310,80 +366,132 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initialize() {
 
-        mapFragment = supportFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment?
+        mapFragment =
+            supportFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment?
 
-        var success:Boolean = MapSettings.setIsolatedDiskCacheRootPath(
+        /*val success: Boolean = MapSettings.setIsolatedDiskCacheRootPath(
             applicationContext.getExternalFilesDir(null)!!.absolutePath + File.separator + ".here-maps"
         )
 
         if(!success)
             Toast.makeText(applicationContext, "Unable to set isolated disk cache path",
                 Toast.LENGTH_LONG).show()
-        else{
-            mapFragment?.init{
-                if(it == OnEngineInitListener.Error.NONE){
-                    map = mapFragment!!.map
-                    map!!.setCenter(GeoCoordinate(49.196261, -123.004773, 0.0), Map.Animation.NONE)
-                    posManager = PositioningManager.getInstance()
-                    posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
+        else{*/
+        mapFragment?.init {
+            if (it == OnEngineInitListener.Error.NONE) {
+                map = mapFragment!!.map
+                map!!.setCenter(GeoCoordinate(49.196261, -123.004773, 0.0), Map.Animation.NONE)
+                posManager = PositioningManager.getInstance()
+                posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
 
-                    // Define positioning listener
-                    // Define positioning listener
+                // Define positioning listener
 
-                    val positionListener: PositioningManager.OnPositionChangedListener =
-                        object : PositioningManager.OnPositionChangedListener {
-                            override fun onPositionUpdated(
-                                method: PositioningManager.LocationMethod,
-                                position: GeoPosition?, isMapMatched: Boolean
-                            ) {
-                                if (position != null) {
-                                    map!!.setCenter(
-                                        position.coordinate,
-                                        Map.Animation.NONE
+                val positionListener: PositioningManager.OnPositionChangedListener =
+                    object : PositioningManager.OnPositionChangedListener {
+                        override fun onPositionUpdated(
+                            method: PositioningManager.LocationMethod,
+                            position: GeoPosition?, isMapMatched: Boolean
+                        ) {
+                            if (position != null) {
+                                map!!.setCenter(
+                                    position.coordinate,
+                                    Map.Animation.NONE
 
-                                    )
+                                )
 
-                                    mapFragment!!.positionIndicator!!.isVisible = true
+                                mapFragment!!.positionIndicator!!.isVisible = true
 
-                                    /*Toast.makeText(applicationContext, "Pozicija " + String.format(
+                                /*Toast.makeText(applicationContext, "Pozicija " + String.format(
                                         Locale.US, "%.6f, %.6f", position.coordinate.longitude, position.coordinate.latitude)
                                         , Toast.LENGTH_LONG).show()*/
-                                }
-
-                                currPos = position!!.coordinate
-
-
-
                             }
 
-                            override fun onPositionFixChanged(
-                                method: PositioningManager.LocationMethod,
-                                status: PositioningManager.LocationStatus
-                            ) {
-                            }
+                            currPos = position!!.coordinate
                         }
 
-                    // Register positioning listener
+                        override fun onPositionFixChanged(
+                            method: PositioningManager.LocationMethod,
+                            status: PositioningManager.LocationStatus
+                        ) {
+                        }
+                    }
 
-                    posManager.addListener(
-                        WeakReference(positionListener)
-                    )
-                    map!!.setZoomLevel((map!!.maxZoomLevel + map!!.minZoomLevel) / 2)
+                // Register positioning listener
 
+                posManager.addListener(
+                    WeakReference(positionListener)
+                )
+                map!!.zoomLevel = (map!!.maxZoomLevel + map!!.minZoomLevel) / 2
 
-                    mapFragment!!.mapGesture!!.addOnGestureListener(markerListenerFactory(), 1, false)
+                posManager.position
 
-                    router = CoreRouter()
+                mapFragment!!.mapGesture!!.addOnGestureListener(markerListenerFactory(), 1, false)
 
-                } else
-                    Toast.makeText(applicationContext, "Cannot Initialize Map Fragment" + it.details,
-                        Toast.LENGTH_LONG).show()
+                router = CoreRouter()
 
-            }
+            } else
+                Toast.makeText(
+                    applicationContext, "Cannot Initialize Map Fragment" + it.details,
+                    Toast.LENGTH_LONG
+                ).show()
+
         }
+        //}
+    }
 
+    private fun addNewPosListener() {
+        if (parkingListener == null) {
+            parkingListener =
+                object : PositioningManager.OnPositionChangedListener {
+                    override fun onPositionUpdated(
+                        method: PositioningManager.LocationMethod,
+                        position: GeoPosition?, isMapMatched: Boolean
+                    ) {
+                        Toast.makeText(
+                            applicationContext, "Udaljenost: " + String.format(
+                                Locale.US, "%.6f",
+                                position!!.coordinate.distanceTo(lastPos!!.coordinate)
+                            ), Toast.LENGTH_LONG
+                        ).show()
+
+                        if (position.coordinate.distanceTo(lastPos!!.coordinate) < 30) {
+                            val smsManager: SmsManager = SmsManager.getDefault()
+
+                            smsManager.sendTextMessage(
+                                "+38765581702",
+                                null, "Uspjeh",
+                                null, null
+                            )
+                        }
+                    }
+
+                    override fun onPositionFixChanged(
+                        method: PositioningManager.LocationMethod,
+                        status: PositioningManager.LocationStatus
+                    ) {
+                    }
+                }
+
+            posManager.addListener(
+                WeakReference(parkingListener)
+            )
+        }
+    }
+
+    private fun initGetPSpotsWorker(){
+        val getPSpotsWorker = OneTimeWorkRequestBuilder<GetPSpotsWorker>()
+            .build()
+        val processPSpotsWorker = OneTimeWorkRequestBuilder<ProcessPSpotsWorker>()
+            .build()
+
+        WorkManager
+            .getInstance()
+            .beginWith(getPSpotsWorker)
+            .then(processPSpotsWorker)
+            .enqueue()
 
     }
+}
 
    /* override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -406,4 +514,3 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         }
     }*/
-}

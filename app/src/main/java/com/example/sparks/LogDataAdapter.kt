@@ -23,9 +23,9 @@ class LogDataAdapter(val context: Context, val logs: List<LogData>) : RecyclerVi
 
     inner class MyViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
         fun setData(data: LogData?, position: Int) {
-            itemView.tv_period.text = data!!.date
-            itemView.tv_location.text = data!!.loc
-            itemView.cost.text = data!!.cost
+            itemView.tv_ocupation.text = data!!.date
+            itemView.tv_name.text = data!!.loc
+            itemView.tv_zone.text = data!!.cost
         }
 
     }

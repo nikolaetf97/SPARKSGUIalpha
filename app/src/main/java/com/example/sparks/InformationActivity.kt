@@ -96,7 +96,7 @@ class InformationActivity : AppCompatActivity(), NavigationView.OnNavigationItem
             val builder = AlertDialog.Builder(this)
             val inflater = layoutInflater
             builder.setTitle("Izaberite period skraćenja")
-            val dialogLayout = inflater.inflate(R.layout.dialog_extend, null)
+            val dialogLayout = inflater.inflate(R.layout.dialog_reserve, null)
             builder.setView(dialogLayout)
             builder.setPositiveButton("Ok"){ dialog, _ ->
                     dialog.dismiss()

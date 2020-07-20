@@ -91,16 +91,16 @@ class ProfileActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-        var toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
+        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
         setSupportActionBar(toolbar)
 
-        var drawer: DrawerLayout = findViewById(R.id.drawer_layout)
+        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
 
-        var naviationView: NavigationView = findViewById(R.id.nav_view_drawer)
+        val naviationView: NavigationView = findViewById(R.id.nav_view_drawer)
 
         naviationView.setNavigationItemSelectedListener(this)
 
-        var toggle = ActionBarDrawerToggle(this, drawer, toolbar,
+        val toggle = ActionBarDrawerToggle(this, drawer, toolbar,
             R.string.navigation_bar_open, R.string.navigation_bar_close)
 
         drawer.addDrawerListener(toggle)
