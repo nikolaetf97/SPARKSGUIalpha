@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.IBinder
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
@@ -47,6 +48,11 @@ class CheckArrivalWorker(
                 .DESTINATION!!
                 .coordinate
                 .distanceTo(SelectParkingActivity.posManager!!.position.coordinate) < 30){
+
+            val serviceIntent = Intent(applicationContext, CheckLeavingService::class.java)
+
+                startForegroundService(applicationContext, serviceIntent)
+
             WorkManager.getInstance(applicationContext).cancelUniqueWork(TAG)
         }
 

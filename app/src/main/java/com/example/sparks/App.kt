@@ -15,6 +15,7 @@ class App : Application() {
     * */
     companion object{
         val channelID: String  = "channel1"
+        var notificationManager: NotificationManager? = null
     }
 
     override fun onCreate(){
@@ -32,8 +33,8 @@ class App : Application() {
 
             channel1.description = "ticket period countdown service"
 
-            val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
-            notificationManager.createNotificationChannel(channel1)
+            notificationManager = getSystemService(NotificationManager::class.java)
+            notificationManager!!.createNotificationChannel(channel1)
 
         }
 

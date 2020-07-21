@@ -11,8 +11,12 @@ import android.content.Intent
 *
 * */
 
-class QuickExtendBroadcastReceiver() : BroadcastReceiver(){
+class ExtendBroadcastReceiver() : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
-        ParkingCountdownTimer.setTime(3000000)  //quick extend for 5minutes
+        ParkingCountdownTimer.setTime(DEFAULT_EXTEND)  //quick extend for 5minutes
+    }
+
+    companion object{
+        val DEFAULT_EXTEND = 3000000L
     }
 }

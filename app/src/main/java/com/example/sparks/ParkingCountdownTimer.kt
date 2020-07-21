@@ -3,6 +3,7 @@ import android.app.NotificationManager
 import android.os.CountDownTimer
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import com.example.sparks.App.Companion.notificationManager
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -18,13 +19,11 @@ object ParkingCountdownTimer  {
     private var millisInFuture: Long = 0
     private var countDownTimer: ControlTimer? = null
     private var notificationBuilder: NotificationCompat.Builder? = null
-    private var notificationManager: NotificationManager? = null
     private var notificationID: Int? = null
 
 
     public fun init(
         millisInFuture: Long,
-        notificationManager: NotificationManager,
         notificationID: Int,
         packageName: String,
         notificationBuilder: NotificationCompat.Builder
@@ -32,10 +31,9 @@ object ParkingCountdownTimer  {
         this.millisInFuture = millisInFuture
         this.notificationID = notificationID
         this.notificationBuilder = notificationBuilder
-        this.notificationManager = notificationManager
         this.packageName = packageName
 
-        countDownTimer = ControlTimer(millisInFuture, this.notificationManager!!,
+        countDownTimer = ControlTimer(millisInFuture,
             this.notificationBuilder!!, this.notificationID!!, this.packageName
         )
         countDownTimer!!.start()
@@ -43,18 +41,18 @@ object ParkingCountdownTimer  {
         return  this
     }
 
-    public fun setTime(millisInFuture: Long){
+    fun setTime(millisInFuture: Long){
         this.millisInFuture += millisInFuture
 
         countDownTimer!!.cancel()
         countDownTimer = ControlTimer(
-            millisInFuture, this.notificationManager!!,
+            millisInFuture,
             this.notificationBuilder!!, this.notificationID!!, packageName
         )
         countDownTimer!!.start()
     }
 
-    public fun start(){
+    fun start(){
         countDownTimer!!.start()
     }
 }
@@ -67,7 +65,6 @@ object ParkingCountdownTimer  {
  ----------------------------------------------*/
 open class ControlTimer(
     private val millisInFuture: Long,
-    private val notificationManager: NotificationManager,
     private val notificationBuilder: NotificationCompat.Builder,
     private val notificationID: Int,
     private val packageName: String
@@ -84,11 +81,16 @@ open class ControlTimer(
             TimeUnit.MILLISECONDS.toSeconds(millisInFuture) % TimeUnit.MINUTES.toSeconds(1)
         )
 
-        val notificationView = RemoteViews(packageName, R.layout.notification_layout_expanded)
-        notificationView.setTextViewText(R.id.chrono, hms)
+        val notificationViewExpanded = RemoteViews(packageName, R.layout.notification_layout_expanded)
+        notificationViewExpanded.setTextViewText(R.id.chrono, hms)
 
-        notificationBuilder.setCustomContentView(notificationView)
+        val notificationViewsCollapsed = RemoteViews(packageName, R.layout.notification_layout_collapsed)
+        notificationViewsCollapsed.setTextViewText(R.id.chrono, hms)
 
-        notificationManager.notify(notificationID, notificationBuilder.build())
+        notificationBuilder
+            .setCustomBigContentView(notificationViewExpanded)
+            .setCustomContentView(notificationViewsCollapsed)
+
+        notificationManager!!.notify(notificationID, notificationBuilder.build())
     }
 }

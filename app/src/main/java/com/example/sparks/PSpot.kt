@@ -10,7 +10,7 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
 
     private var marker: MapMarker = initMapMarker()
 
-    public var hasChanged = false
+    private var hasChanged = false
 
 
     override fun equals(other: Any?): Boolean {
@@ -26,7 +26,7 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
     override fun hashCode(): Int = name.hashCode()
 
 
-    public fun setFreeSpaces(set: Int){
+    fun setFreeSpaces(set: Int){
         freeSpace = set
         hasChanged = true
         setMarkerIcon()
@@ -89,15 +89,19 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
     private fun chooseIcon(image: Image, marker: MapMarker){
         val tmp = freeSpace/space
 
-        if (tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_large_green)
-            marker.description = R.drawable.parking_pin_large_green.toString()
-        } else if (tmp < 0.5){
-            image.setImageResource(R.drawable.parking_pin_large_yellow)
-            marker.description = R.drawable.parking_pin_large_yellow.toString()
-        } else {
-            image.setImageResource(R.drawable.parking_pin_large_red)
-            marker.description = R.drawable.parking_pin_large_red.toString()
+        when {
+            tmp < 0.25 -> {
+                image.setImageResource(R.drawable.parking_pin_large_green)
+                marker.description = R.drawable.parking_pin_large_green.toString()
+            }
+            tmp > 0.25 && tmp < 0.5 -> {
+                image.setImageResource(R.drawable.parking_pin_large_yellow)
+                marker.description = R.drawable.parking_pin_large_yellow.toString()
+            }
+            else -> {
+                image.setImageResource(R.drawable.parking_pin_large_red)
+                marker.description = R.drawable.parking_pin_large_red.toString()
+            }
         }
 
         marker.icon = image
@@ -110,12 +114,16 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
         val tmp = freeSpace/space
         val image = Image()
 
-        if(tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_large_green)
-        } else if (tmp < 0.5){
-            image.setImageResource(R.drawable.parking_pin_large_yellow)
-        } else{
-            image.setImageResource(R.drawable.parking_pin_large_red)
+        when {
+            tmp < 0.25 -> {
+                image.setImageResource(R.drawable.parking_pin_large_green)
+            }
+            tmp > 0.25 && tmp < 0.5 -> {
+                image.setImageResource(R.drawable.parking_pin_large_yellow)
+            }
+            else -> {
+                image.setImageResource(R.drawable.parking_pin_large_red)
+            }
         }
 
         marker.icon = image
@@ -125,12 +133,16 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
         val tmp = freeSpace/space
         val image = Image()
 
-        if(tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_larger_green)
-        } else if (tmp < 0.5){
-            image.setImageResource(R.drawable.parking_pin_larger_yellow)
-        } else{
-            image.setImageResource(R.drawable.parking_pin_larger_red)
+        when {
+            tmp < 0.25 -> {
+                image.setImageResource(R.drawable.parking_pin_larger_green)
+            }
+            tmp > 0.25 && tmp < 0.5 -> {
+                image.setImageResource(R.drawable.parking_pin_larger_yellow)
+            }
+            else -> {
+                image.setImageResource(R.drawable.parking_pin_larger_red)
+            }
         }
 
         marker.icon = image
@@ -147,21 +159,21 @@ object PSpotSupplier{
 
     private val maps = mutableListOf<Map>()
 
-    public fun addMap(map: Map) = maps.add(map)
+    fun addMap(map: Map) = maps.add(map)
 
-    val parkingSports = mutableSetOf<PSpot>(PSpot(44.809049, 17.209781, 12, 50, "Bingo"),
+    val parkingSports = mutableSetOf(PSpot(44.809049, 17.209781, 12, 50, "Bingo"),
         PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
         PSpot(44.817937, 17.216730, 24, 120, "Hiper Kort"),
         PSpot(44.816687, 17.211028, 50, 300, "FIS"),
         PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
 
-    public fun addPSpot(spot: PSpot){
+    fun addPSpot(spot: PSpot){
         parkingSports.add(spot)
         for(map in maps)
             map.addMapObject(spot.getMarker())
     }
 
-    public fun showNearbyMarkers(
+    fun showNearbyMarkers(
         numOfSpots: Int,
         coordinate: GeoCoordinate
     ): List<PSpot> {

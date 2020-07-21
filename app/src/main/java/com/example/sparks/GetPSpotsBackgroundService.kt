@@ -86,8 +86,9 @@ class GetPSpotsWorker(context: Context,
                 .url("http://192.168.0.104:8080/RestParking/api/service").build())
                 .execute().body().toString()
 
-            Result.success(Data.Builder()
-                .putString("JSON", res).build())
+            Result
+                .success(Data.Builder().putString("JSON", res)
+                    .build())
         } catch (e: Exception){
             e.printStackTrace()
 
