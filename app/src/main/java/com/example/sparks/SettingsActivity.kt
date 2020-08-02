@@ -95,6 +95,8 @@ class SettingsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSel
 
         toggle.syncState()
 
+
+
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())
