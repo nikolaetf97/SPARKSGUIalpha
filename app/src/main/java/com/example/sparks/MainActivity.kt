@@ -191,9 +191,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         initialize()
         initGetPSpotsWorker()
-
-        map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
-        PSpotSupplier.addMap(map!!)
+        //ovde je null pointer
+        /*map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })*/
+        /*PSpotSupplier.addMap(map!!)*/
     }
 
     override fun onBackPressed() {
