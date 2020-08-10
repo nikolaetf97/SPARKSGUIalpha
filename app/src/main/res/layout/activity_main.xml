@@ -34,47 +34,77 @@
             android:layout_height="match_parent">
 
 
-                <!--com.google.android.material.appbar.AppBarLayout
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="top"
+                android:orientation="vertical">
+
+                <!--com.here.sdk.mapviewlite.MapViewLite
+                    android:id="@+id/map_view_main"
+                    android:layout_margin="4dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="240dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"></com.here.sdk.mapviewlite.MapViewLite-->
+
+                <fragment
+                    android:id="@+id/mapfragment"
+                    class="com.here.android.mpa.mapping.AndroidXMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="540dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/periodTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/mapfragment"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="Period: 5m"
+                    android:textSize="21sp" />
+
+                <EditText
+                    android:id="@+id/registryNumberEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/AppTheme.AppBarOverlay">
+                    android:layout_below="@+id/periodTextView"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:hint="Broj tablica: M48-E-415"
+                    android:textSize="21sp" />
 
-                </com.google.android.material.appbar.AppBarLayout!-->
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/registryNumberEditText"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginRight="180dp"
+                    android:backgroundTint="#2196F3"
+                    android:clickable="false"
+                    android:focusable="true"
+                    android:foregroundGravity="center"
+                    app:srcCompat="@drawable/reserve_parking_button" />
 
-
-            <!--com.here.sdk.mapviewlite.MapViewLite
-                android:id="@+id/map_view_main"
-                android:layout_width="match_parent"
-                android:layout_height="420dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="10dp"></-com.here.sdk.mapviewlite.MapViewLite-->
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="384dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|center"
-                android:layout_margin="@dimen/fab_margin"
-                android:backgroundTint="#2196F3"
-                app:borderWidth="0dp"
-                app:pressedTranslationZ="12dp"
-                app:srcCompat="@drawable/img_218400" />
-
-            <fragment
-                android:id="@+id/mapfragment"
-                class="com.here.android.mpa.mapping.AndroidXMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="528dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="10dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+            </RelativeLayout>
 
         </FrameLayout>
 

@@ -3,6 +3,7 @@ package com.example.sparks
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
+import android.os.Handler
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -11,21 +12,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doAfterTextChanged
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
+import androidx.work.*
 import com.google.android.material.navigation.NavigationView
 import com.here.android.mpa.common.*
 import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.routing.*
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_parking.*
+import kotlinx.android.synthetic.main.activity_parking.fab
+import kotlinx.android.synthetic.main.activity_parking.registryNumberEditText
 import kotlinx.android.synthetic.main.dialog_logs.view.*
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -104,6 +105,10 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     private var destinationSelected: Boolean? = true
     private var platesSelected: Boolean? = null
 
+    private lateinit var mRandom: Random
+    private lateinit var mHandler: Handler
+    private lateinit var mRunnable:Runnable
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parking)
@@ -117,13 +122,27 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
-        routeParking.isClickable = false
+        smsNumber = "+38765581702" //tmp broj kupicu neki broj kasnije za testiranje
 
-        smsNumber = "+387" + PreferenceManager
-            .getDefaultSharedPreferences(this)
-            .getString("name", null)!!.substring(1)
 
-        periodTextView.setOnClickListener{
+        swipeContainer.setColorSchemeColors(
+            resources.getColor(android.R.color.holo_blue_bright),
+            resources.getColor(android.R.color.holo_green_dark),
+            resources.getColor(android.R.color.holo_orange_dark),
+            resources.getColor(android.R.color.holo_red_dark)
+        )
+
+        swipeContainer.setOnRefreshListener {
+
+            mRunnable = Runnable {
+                quickStart()
+                swipeContainer.isRefreshing = false
+            }
+
+            mHandler.postDelayed(mRunnable, ((Random().nextInt(4) + 1)*1000).toLong())
+        }
+
+        parkingperiodTextView.setOnClickListener{
             val builder = AlertDialog.Builder(this)
             val inflater = layoutInflater
             builder.setTitle("Izaberite period rezervacije")
@@ -155,7 +174,7 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
 
                     if(i != -1){
                         periodSelected = true
-                        routeParking.isClickable = periodSelected!! && platesSelected!! && destinationSelected!!
+                        fab.isClickable = periodSelected!! && platesSelected!! && destinationSelected!!
                     }
                 }
 
@@ -165,28 +184,29 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             }
             builder.show()
         }
-        routeParking.setOnClickListener {
+        fab.setOnClickListener {
+
+            showRoute()
             WorkManager
                 .getInstance(applicationContext)
-                .enqueue(
-                    PeriodicWorkRequest
-                    .Builder(CheckArrivalWorker::class.java, 5, TimeUnit.SECONDS)
-                    .build())
+                .enqueueUniqueWork(CheckArrivalWorker.TAG, ExistingWorkPolicy.KEEP,
+                OneTimeWorkRequestBuilder<CheckArrivalWorker>().build())
         }
 
         initialize()
 
         registryNumberEditText.doAfterTextChanged {
             platesSelected = !it.isNullOrBlank()
-            routeParking.isClickable = periodSelected!! && platesSelected!! && destinationSelected!!
+            fab.isClickable = periodSelected!! && platesSelected!! && destinationSelected!!
 
             if(platesSelected!!)
                 plates = it.toString()
         }
+    }
 
-        map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
-
-        PSpotSupplier.addMap(map!!)
+    private fun quickStart() {
+        TODO("Funkcija koja ce kada postoje default podesavanja da" +
+                " automatski ih ucita i napravi rezervaciju ")
     }
 
     /*
@@ -315,8 +335,8 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                             PSpotSupplier.parkingSports
                                 .filter { spot -> spot.getMarker() == MainActivity.DESTINATION }[0]
                                 .expandMarker()
-
-                            routeParking.isClickable = periodSelected!! && platesSelected!! && destinationSelected!!
+                            destinationSelected = true
+                            fab.isClickable = periodSelected!! && platesSelected!! && destinationSelected!!
                         }
                         val overlay = MapOverlay(view, viewObject.coordinate)
 
@@ -381,7 +401,7 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     * */
     private fun initialize() {
 
-        mapFragment = supportFragmentManager.findFragmentById(R.id.map_view_main) as AndroidXMapFragment?
+        mapFragment = supportFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment?
 
         val success:Boolean = MapSettings.setIsolatedDiskCacheRootPath(
             applicationContext.getExternalFilesDir(null)!!.absolutePath + File.separator + ".here-maps"
@@ -415,18 +435,12 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                                     )
 
                                     mapFragment!!.positionIndicator!!.isVisible = true
-
                                     Toast.makeText(applicationContext, "Udaljenost: " + String.format(
                                         Locale.US, "%.6f", position.coordinate.distanceTo(lastPos!!.coordinate))
                                         , Toast.LENGTH_LONG).show()
                                 }
-
                                 currPos = position!!.coordinate
-
-
-
                             }
-
                             override fun onPositionFixChanged(
                                 method: PositioningManager.LocationMethod,
                                 status: PositioningManager.LocationStatus
@@ -441,10 +455,11 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     )
                     map!!.zoomLevel = (map!!.maxZoomLevel + map!!.minZoomLevel) / 2
 
-
                     mapFragment!!.mapGesture!!.addOnGestureListener(markerListenerFactory(), 1, false)
-
                     router = CoreRouter()
+
+                    map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
+                    PSpotSupplier.addMap(map!!)
 
                 } else
                     Toast.makeText(applicationContext, "Cannot Initialize Map Fragment" + it.details,

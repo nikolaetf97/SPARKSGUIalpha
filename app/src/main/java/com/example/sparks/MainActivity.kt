@@ -3,6 +3,7 @@ package com.example.sparks
 import android.content.Intent
 import android.graphics.PointF
 import android.os.Bundle
+import android.os.Handler
 import android.telephony.SmsManager
 import android.view.MenuItem
 import android.widget.*
@@ -12,10 +13,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
+import androidx.core.widget.doAfterTextChanged
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.android.material.navigation.NavigationView
 import com.here.android.mpa.common.*
@@ -23,11 +25,19 @@ import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.fab
+import kotlinx.android.synthetic.main.activity_main.registryNumberEditText
+import kotlinx.android.synthetic.main.activity_parking.*
 import kotlinx.android.synthetic.main.dialog_logs.view.*
 import java.lang.ref.WeakReference
 import java.util.*
-import java.util.concurrent.TimeUnit
 
+
+/*
+*
+* TODO("Jednostavije bi bilo da na MainActivity se unesu tablice itd.. da se ne komplikuje sa 2 mape")
+*
+* */
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -95,6 +105,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         var DESTINATION: MapMarker? = null
     }
 
+    private var destinationSelected: Boolean = false
+    private var platesSelected: Boolean = false
+    private var periodSelected: Boolean = false
     private var pastOverlay: MapOverlay? = null
 
     private var lastPos: MapMarker? = null
@@ -131,12 +144,82 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer.addDrawerListener(toggle)
         toggle.syncState()
         notificationManager = NotificationManagerCompat.from(this)
+        periodTextView.setOnClickListener{
+            val builder = AlertDialog.Builder(this)
+            val inflater = layoutInflater
+            builder.setTitle("Izaberite period rezervacije")
+            val dialogLayout = inflater.inflate(R.layout.dialog_reserve, null)
 
+            dialogLayout.findViewById<RadioGroup>(R.id.period_radio_group)
+                .setOnCheckedChangeListener{ _: RadioGroup, i: Int ->
+                    when(i){
+                        R.id.extend1 -> {
+                            SelectParkingActivity.length = 5*60*1000
+                            periodTextView.text = "Period: 5min"
+                        }
 
-        fab.isClickable = false
-        fab.setOnClickListener {
-            startActivity(Intent(this, SelectParkingActivity::class.java))
+                        R.id.extend2 -> {
+                            SelectParkingActivity.length = 10*60*1000
+                            periodTextView.text = "Period: 10min"
+                        }
+
+                        R.id.extend3 -> {
+                            SelectParkingActivity.length = 15*60*1000
+                            periodTextView.text = "Period: 15min"
+                        }
+
+                        R.id.extend4 -> {
+                            SelectParkingActivity.length = 20*60*1000
+                            periodTextView.text = "Period: 20min"
+                        }
+
+                        R.id.extend5 -> {
+                            SelectParkingActivity.length = 30*60*1000
+                            periodTextView.text = "Period: 30min"
+                        }
+                    }
+
+                    if(i != -1){
+                        periodSelected = true
+                        fab.isClickable = periodSelected && platesSelected && destinationSelected
+                    }
+                }
+
+            registryNumberEditText.doAfterTextChanged {
+                platesSelected = !it.isNullOrBlank()
+                fab.isClickable = periodSelected && platesSelected && destinationSelected
+
+                if(platesSelected)
+                    SelectParkingActivity.plates = it.toString()
+            }
+
+            builder.setView(dialogLayout)
+            builder.setPositiveButton("Ok"){ dialog, _ ->
+                dialog.dismiss()
+            }
+            builder.show()
         }
+
+        fab.setOnClickListener {
+            WorkManager
+                .getInstance(applicationContext)
+                .enqueueUniqueWork(CheckArrivalWorker.TAG, ExistingWorkPolicy.KEEP,
+                    OneTimeWorkRequestBuilder<CheckArrivalWorker>().build())
+        }
+
+        swipeContainer.setOnRefreshListener {
+            Handler().postDelayed({
+                swipeContainer.isRefreshing = false
+                showRoute()}
+                ,((Random().nextInt(4) + 1) * 1000).toLong())
+        }
+
+        swipeContainer.setColorSchemeResources(
+            android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light
+        )
 
         /*
         mHandler = Handler()
@@ -191,9 +274,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         initialize()
         initGetPSpotsWorker()
-
-        map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
-        PSpotSupplier.addMap(map!!)
     }
 
     override fun onBackPressed() {
@@ -213,7 +293,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         map!!.removeMapObject(currRoute!!)
 
                     currRoute = MapRoute(p0!![0].route)
-
                     map!!.addMapObject(currRoute!!)
                 }
             }
@@ -271,6 +350,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 PSpotSupplier.showNearbyMarkers(3, lastPos!!.coordinate)
 
+                if(currRoute != null)
+                    map!!.removeMapObject(currRoute!!)
+
+                if (DESTINATION != null){
+                    PSpotSupplier.parkingSports
+                        .filter { spot -> spot.getMarker() == DESTINATION }[0]
+                        .shrinkMarker()
+                    DESTINATION = null
+                    destinationSelected = false
+                    fab.isClickable = periodSelected && platesSelected && destinationSelected
+                }
+
                 return true
             }
 
@@ -286,46 +377,57 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         if (pastOverlay != null)
                             map!!.removeMapOverlay(pastOverlay!!)
 
-                        val spot =
-                            PSpotSupplier.parkingSports.filter { spot -> spot.getMarker() == viewObject }[0]
-                        val view = layoutInflater.inflate(R.layout.infobubble, null)
+                        val spots =
+                            PSpotSupplier.parkingSports.filter { spot -> spot.getMarker() == viewObject }
+                        if (!spots.isEmpty()) {
+                            val spot = spots[0]
 
-                        val icon = view.findViewById<ImageView>(R.id.icon_parking)
-                        icon.setImageResource(viewObject.description!!.toInt())
+                            val view = layoutInflater.inflate(R.layout.infobubble, null)
 
-                        val ocupation = view.findViewById<TextView>(R.id.tv_ocupation)
-                        val placeholder = spot.freeSpace.toString() + "/" + spot.space.toString()
-                        ocupation.text = placeholder
+                            val icon = view.findViewById<ImageView>(R.id.icon_parking)
+                            icon.setImageResource(viewObject.description!!.toInt())
 
-                        val name = view.findViewById<TextView>(R.id.tv_name)
-                        name.text = spot.name
+                            val ocupation = view.findViewById<TextView>(R.id.tv_ocupation)
+                            val placeholder =
+                                spot.freeSpace.toString() + "/" + spot.space.toString()
+                            ocupation.text = placeholder
 
-                        val zone = view.findViewById<TextView>(R.id.tv_zone)
-                        zone.text = "1"
+                            val name = view.findViewById<TextView>(R.id.tv_name)
+                            name.text = spot.name
 
-                        val button = view.findViewById<Button>(R.id.tv_select)
+                            val zone = view.findViewById<TextView>(R.id.tv_zone)
+                            zone.text = "1"
 
-                        button.setOnClickListener {
-                            val tmpMarker = viewObject
-                            if (DESTINATION != null)
+                            val button = view.findViewById<Button>(R.id.tv_select)
+
+                            button.setOnClickListener {
+                                val tmpMarker = viewObject
+                                if (DESTINATION != null)
+                                    PSpotSupplier.parkingSports
+                                        .filter { spot -> spot.getMarker() == DESTINATION }[0]
+                                        .shrinkMarker()
+
+                                DESTINATION = tmpMarker
+                                destinationSelected = true
+                                fab.isClickable = periodSelected && platesSelected && destinationSelected
+
                                 PSpotSupplier.parkingSports
                                     .filter { spot -> spot.getMarker() == DESTINATION }[0]
-                                    .shrinkMarker()
-                            DESTINATION = tmpMarker
+                                    .expandMarker()
 
-                            PSpotSupplier.parkingSports
-                                .filter { spot -> spot.getMarker() == DESTINATION }[0]
-                                .expandMarker()
+                                if(pastOverlay != null)
+                                    map!!.removeMapOverlay(pastOverlay!!)
+                                if(currRoute != null)
+                                    map!!.removeMapObject(currRoute!!)
+                            }
+                            val overlay = MapOverlay(view, viewObject.coordinate)
 
-                            fab.isClickable = true
+                            map!!.addMapOverlay(overlay)
+
+                            pastOverlay = overlay
+
+                            break
                         }
-                        val overlay = MapOverlay(view, viewObject.coordinate)
-
-                        map!!.addMapOverlay(overlay)
-
-                        pastOverlay = overlay
-
-                        break
                     }
                 }
                 return true
@@ -345,7 +447,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun showRoute() {
         if (lastPos != null) {
-            val coordinate: GeoCoordinate = lastPos!!.coordinate
+            val coordinate: GeoCoordinate = DESTINATION!!.coordinate
 
             val routePlan = RoutePlan()
 
@@ -393,20 +495,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             position: GeoPosition?, isMapMatched: Boolean
                         ) {
                             if (position != null) {
-                                map!!.setCenter(
-                                    position.coordinate,
-                                    Map.Animation.NONE
-
-                                )
 
                                 mapFragment!!.positionIndicator!!.isVisible = true
 
                                 /*Toast.makeText(applicationContext, "Pozicija " + String.format(
                                         Locale.US, "%.6f, %.6f", position.coordinate.longitude, position.coordinate.latitude)
                                         , Toast.LENGTH_LONG).show()*/
+                                currPos = position!!.coordinate
                             }
 
-                            currPos = position!!.coordinate
                         }
 
                         override fun onPositionFixChanged(
@@ -421,13 +518,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 posManager.addListener(
                     WeakReference(positionListener)
                 )
+
+                map!!.setCenter(
+                    posManager.position.coordinate,
+                    Map.Animation.NONE
+
+                )
+
                 map!!.zoomLevel = (map!!.maxZoomLevel + map!!.minZoomLevel) / 2
-
                 posManager.position
-
                 mapFragment!!.mapGesture!!.addOnGestureListener(markerListenerFactory(), 1, false)
-
                 router = CoreRouter()
+
+                PSpotSupplier.init()
+
+                map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
+                PSpotSupplier.addMap(map!!)
 
             } else
                 Toast.makeText(
@@ -458,7 +564,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             val smsManager: SmsManager = SmsManager.getDefault()
 
                             smsManager.sendTextMessage(
-                                "+38765581702",
+                                "+38765185060",
                                 null, "Uspjeh",
                                 null, null
                             )

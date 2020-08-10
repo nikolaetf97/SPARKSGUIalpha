@@ -88,7 +88,7 @@
                 app:srcCompat="@drawable/img_218400" />
 
             <com.here.sdk.mapviewlite.MapViewLite
-                android:id="@+id/map_view_main"
+                android:id="@+id/mapfragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginLeft="10dp"
