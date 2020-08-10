@@ -3,13 +3,14 @@ package com.example.sparks
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startForegroundService
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
+import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class CheckArrivalForegroundService: Service() {
@@ -41,8 +42,12 @@ class CheckArrivalWorker(
 ): Worker(context, workerParams){
 
     override fun doWork(): Result {
+        Handler(Looper.getMainLooper()).post {
+            Toast.makeText(applicationContext, "Checking arrival...", Toast.LENGTH_LONG).show()
+        }
 
-        Toast.makeText(applicationContext, "Checking arrival...", Toast.LENGTH_LONG).show()
+
+        Thread.sleep(4000)
 
         if(MainActivity
                 .DESTINATION!!
@@ -51,9 +56,14 @@ class CheckArrivalWorker(
 
             val serviceIntent = Intent(applicationContext, CheckLeavingService::class.java)
 
-                startForegroundService(applicationContext, serviceIntent)
+            startForegroundService(applicationContext, serviceIntent)
 
             WorkManager.getInstance(applicationContext).cancelUniqueWork(TAG)
+        }else{
+            val nextInstance = OneTimeWorkRequestBuilder<CheckArrivalWorker>().build()
+
+            WorkManager.getInstance(applicationContext)
+                .enqueueUniqueWork(TAG, ExistingWorkPolicy.REPLACE, nextInstance)
         }
 
         return Result.success()
