@@ -4,13 +4,6 @@ import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.Image
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.mapping.MapMarker
-import java.util.function.DoubleBinaryOperator
-
-/*
-*
-* TODO("Optimizacije: tmp treba da bude jedna promjenjiva objekta, i da se mjenja kada se mjenja freeSpace")
-*
-* */
 
 data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, val space: Int,
                  val name: String = "", val zone: Int = 0){
@@ -94,17 +87,21 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
     }
 
     private fun chooseIcon(image: Image, marker: MapMarker){
-        val tmp = freeSpace.toDouble() / space.toDouble()
+        val tmp = freeSpace/space
 
-        if (tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_large_green)
-            marker.description = R.drawable.parking_pin_large_green.toString()
-        } else if (tmp < 0.5){
-            image.setImageResource(R.drawable.parking_pin_large_yellow)
-            marker.description = R.drawable.parking_pin_large_yellow.toString()
-        } else {
-            image.setImageResource(R.drawable.parking_pin_large_red)
-            marker.description = R.drawable.parking_pin_large_red.toString()
+        when {
+            tmp < 0.25 -> {
+                image.setImageResource(R.drawable.parking_pin_large_green)
+                marker.description = R.drawable.parking_pin_large_green.toString()
+            }
+            tmp > 0.25 && tmp < 0.5 -> {
+                image.setImageResource(R.drawable.parking_pin_large_yellow)
+                marker.description = R.drawable.parking_pin_large_yellow.toString()
+            }
+            else -> {
+                image.setImageResource(R.drawable.parking_pin_large_red)
+                marker.description = R.drawable.parking_pin_large_red.toString()
+            }
         }
 
         marker.icon = image
@@ -114,30 +111,38 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
     fun getMarker(): MapMarker = marker
 
     fun shrinkMarker() {
-        val tmp = freeSpace.toDouble() / space.toDouble()
+        val tmp = freeSpace/space
         val image = Image()
 
-        if (tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_large_green)
-        } else if (tmp < 0.5){
-            image.setImageResource(R.drawable.parking_pin_large_yellow)
-        } else {
-            image.setImageResource(R.drawable.parking_pin_large_red)
+        when {
+            tmp < 0.25 -> {
+                image.setImageResource(R.drawable.parking_pin_large_green)
+            }
+            tmp > 0.25 && tmp < 0.5 -> {
+                image.setImageResource(R.drawable.parking_pin_large_yellow)
+            }
+            else -> {
+                image.setImageResource(R.drawable.parking_pin_large_red)
+            }
         }
 
         marker.icon = image
     }
 
     fun expandMarker() {
-        val tmp = freeSpace.toDouble() / space.toDouble()
+        val tmp = freeSpace/space
         val image = Image()
 
-        if (tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_larger_green)
-        } else if (tmp < 0.5){
-            image.setImageResource(R.drawable.parking_pin_larger_yellow)
-        } else {
-            image.setImageResource(R.drawable.parking_pin_larger_red)
+        when {
+            tmp < 0.25 -> {
+                image.setImageResource(R.drawable.parking_pin_larger_green)
+            }
+            tmp > 0.25 && tmp < 0.5 -> {
+                image.setImageResource(R.drawable.parking_pin_larger_yellow)
+            }
+            else -> {
+                image.setImageResource(R.drawable.parking_pin_larger_red)
+            }
         }
 
         marker.icon = image
@@ -147,7 +152,7 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
 /*
 * Dodao sam da posalje numberOfSpaces, da bi mogao racunati zauzetost
 * pretpostavka da je parking jedinstveno identifikovan
-* svojom geografskom pozicijom i imenom
+* svojom geografskom pozicijom
 * */
 
 object PSpotSupplier{
@@ -156,7 +161,11 @@ object PSpotSupplier{
 
     fun addMap(map: Map) = maps.add(map)
 
-    lateinit var  parkingSports: MutableSet<PSpot>
+    val parkingSports = mutableSetOf(PSpot(44.809049, 17.209781, 12, 50, "Bingo"),
+        PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
+        PSpot(44.817937, 17.216730, 24, 120, "Hiper Kort"),
+        PSpot(44.816687, 17.211028, 50, 300, "FIS"),
+        PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
 
     fun addPSpot(spot: PSpot){
         parkingSports.add(spot)
@@ -181,14 +190,6 @@ object PSpotSupplier{
 
 
         return spots
-    }
-
-    fun init(){
-        parkingSports = mutableSetOf(PSpot(44.809049, 17.209781, 20, 50, "Bingo"),
-            PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
-            PSpot(44.817937, 17.216730, 100, 120, "Hiper Kort"),
-            PSpot(44.816687, 17.211028, 50, 300, "FIS"),
-            PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
     }
 }
 

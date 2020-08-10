@@ -46,7 +46,7 @@
                     android:layout_marginRight="10dp"></com.here.sdk.mapviewlite.MapViewLite-->
 
                 <fragment
-                    android:id="@+id/mapfragment"
+                    android:id="@+id/map_view_main"
                     class="com.here.android.mpa.mapping.AndroidXMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="440dp"
@@ -64,10 +64,10 @@
                     app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
-                    android:id="@+id/parkingperiodTextView"
+                    android:id="@+id/periodTextView"
                     android:layout_width="match_parent"
                     android:layout_height="32dp"
-                    android:layout_below="@+id/mapfragment"
+                    android:layout_below="@+id/map_view_main"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
@@ -78,7 +78,7 @@
                     android:id="@+id/registryNumberEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/parkingperiodTextView"
+                    android:layout_below="@+id/periodTextView"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
@@ -87,7 +87,7 @@
                     android:textSize="21sp" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab"
+                    android:id="@+id/routeParking"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/registryNumberEditText"

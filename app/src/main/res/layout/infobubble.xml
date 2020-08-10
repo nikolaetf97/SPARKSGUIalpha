@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="200dp"
-    android:layout_height="100dp">
+<androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="180dp"
+    android:layout_height="96dp">
 
     <RelativeLayout
+        android:padding="6dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="6dp">
+        android:layout_height="wrap_content">
 
-        <ImageView
+        <androidx.appcompat.widget.ImageView
             android:id="@+id/icon_parking"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="6dp"
-            android:contentDescription="TODO" />
+            android:layout_marginRight="6dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_ocupation"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/icon_parking"
+            android:layout_alignParentTop="true"
             android:text="Trenutno zauzeće: "
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:layout_height="wrap_content" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_ocupation"
-            android:layout_toRightOf="@+id/icon_parking"
             android:text="Ime parkinga"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/icon_parking"
+            android:layout_below="@+id/tv_ocupation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_zone"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_name"
             android:layout_toRightOf="@+id/icon_parking"
+            android:layout_below="@+id/tv_name"
+            android:textSize="12sp"
             android:text="Zona: "
-            android:textSize="12sp" />
+            android:layout_height="wrap_content" />
 
         <Button
+            android:layout_width="36dp"
+            android:layout_height="24dp"
             android:id="@+id/tv_select"
-            android:layout_width="45dp"
-            android:layout_height="36dp"
             android:layout_below="@+id/tv_zone"
-            android:layout_marginLeft="136dp"
+            android:layout_marginLeft="72dp"
             android:layout_marginTop="4dp"
             android:foreground="@drawable/ic_check_black_12dp"
-            android:foregroundGravity="center" />
+            android:foregroundGravity="center"/>
 
 
     </RelativeLayout>
