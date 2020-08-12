@@ -122,6 +122,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawer: DrawerLayout
     private lateinit var notificationManager: NotificationManagerCompat
 
+    private lateinit var tmp: Random
+
     /*private lateinit var mRandom: Random
     private lateinit var mHandler: Handler
     private lateinit var mRunnable: Runnable*/
