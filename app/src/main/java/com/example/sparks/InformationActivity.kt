@@ -1,6 +1,8 @@
 package com.example.sparks
 
+import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.EditText
@@ -13,6 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.dialog_logs.view.*
+import java.util.*
 
 class InformationActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -26,10 +29,8 @@ class InformationActivity : AppCompatActivity(), NavigationView.OnNavigationItem
 
                 R.id.user_manual -> {
                     val alert= AlertDialog.Builder(this)
-                    alert.setTitle("Uputstvo za upotrebu")
-                    alert.setMessage("1.Kao korisnik ove aplikacije potrebno je prvo da odaberete destinaciju, kako bi vam aplikacija mogla prikazati informacije o parking mjestima u krugu od 500 " +
-                            "2.odaberite parking, potom je potebno da unesete registarske tablice, vrijeme na koje se parking placa \n" +
-                            "3.nakon toga pritisnite posalji")
+                    alert.setTitle(getString(R.string.how_to_use))
+                    alert.setMessage(getString(R.string.how_to_use_value))
                     alert.setPositiveButton("OK"){dialog, which ->
                         dialog.dismiss()
                     }
@@ -38,20 +39,26 @@ class InformationActivity : AppCompatActivity(), NavigationView.OnNavigationItem
                 R.id.report_error ->{
                     val builder = AlertDialog.Builder(this)
                     val inflater = layoutInflater
-                    builder.setTitle("Ako ste primjetili ikakve greške u radu aplikacije, molimo vas da ih ukratko opišete")
+                    builder.setTitle(getString(R.string.error_info_value))
                     val dialogLayout = inflater.inflate(R.layout.error_dialog, null)
                     val editText  = dialogLayout.findViewById<EditText>(R.id.editText)
                     builder.setView(dialogLayout)
                     builder.setPositiveButton("OK"){dialog, which ->
-                        dialog.dismiss()
+                        val emailIntent = Intent(Intent.ACTION_SEND)
+                        emailIntent.setType("text/plain")
+                        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("spark-feedback@outlook.com"))
+                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback")
+                        emailIntent.putExtra(Intent.EXTRA_TEXT, editText.text)
+                        emailIntent.setType("message/rfc822")
+                        startActivity(Intent.createChooser(emailIntent, "Send email using..."))
                     }
                     builder.show()
                 }
 
                 R.id.about -> {
                     var alert= AlertDialog.Builder(this)
-                    alert.setTitle("O aplikaciji")
-                    alert.setMessage("Aplikacija SPARK je rezultat urađenog projekta iz predmeta Projektovanje Softvera, omogućava korisniku da lakše pronađe slobodno parking mjesto kao i da mu prikaže mnoštvo korisnih informacija o parkinzima u Banja Luci \n \nVerzija:1.0")
+                    alert.setTitle(getString(R.string.about_app))
+                    alert.setMessage(getString(R.string.about_app_value))
                     alert.setPositiveButton("OK"){dialog,which->
                         dialog.dismiss()
                     }
@@ -62,7 +69,7 @@ class InformationActivity : AppCompatActivity(), NavigationView.OnNavigationItem
                     val logsLayout = layoutInflater.inflate(R.layout.dialog_logs, null)
                     val logsDialog = AlertDialog.Builder(this)
                     logsDialog.setView(logsLayout)
-                    logsDialog.setTitle("Logovi")
+                    logsDialog.setTitle(getString(R.string.logovi))
                     logsLayout.recycler_view.layoutManager = LinearLayoutManager(this)
                     logsLayout.recycler_view.adapter= LogDataAdapter(this, Supplier.logData)
                     logsDialog.setPositiveButton("Ok"){ dialog, _ ->dialog.dismiss() }
@@ -74,17 +81,28 @@ class InformationActivity : AppCompatActivity(), NavigationView.OnNavigationItem
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        val lang = sharedPref.getString("LANG","sr")
+        val locale = Locale(lang!!)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_info)
         var toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
         setSupportActionBar(toolbar)
+
+        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
+        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
 
         var drawer: DrawerLayout = findViewById(R.id.drawer_layout)
 
         var naviationView: NavigationView = findViewById(R.id.nav_view_drawer)
 
         naviationView.setNavigationItemSelectedListener(this)
-
         var toggle: ActionBarDrawerToggle = ActionBarDrawerToggle(this, drawer, toolbar,
             R.string.navigation_bar_open, R.string.navigation_bar_close)
 
@@ -95,7 +113,7 @@ class InformationActivity : AppCompatActivity(), NavigationView.OnNavigationItem
         findViewById<TextView>(R.id.textView3).setOnClickListener{
             val builder = AlertDialog.Builder(this)
             val inflater = layoutInflater
-            builder.setTitle("Izaberite period skraćenja")
+            builder.setTitle(getString(R.string.reduction_time))
             val dialogLayout = inflater.inflate(R.layout.dialog_reserve, null)
             builder.setView(dialogLayout)
             builder.setPositiveButton("Ok"){ dialog, _ ->

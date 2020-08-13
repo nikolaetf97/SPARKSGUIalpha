@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SPARKS</string>
+    <string name="navigation_bar_open">Open navigation bar</string>
+    <string name="navigation_bar_close">Close navigation bar</string>
+    <string name="action_settings">Settings</string>
+    <string name="name">name</string>
+    <string name="settings">Settings</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="_30min">30min</string>
+    <string name="_20min">20min</string>
+    <string name="_5min">5min</string>
+    <string name="_10min">10min</string>
+    <string name="_15min">15min</string>
+    <string name="four_hours">4h</string>
+    <string name="three_hours">3h</string>
+    <string name="two_hours">2h</string>
+    <string name="one_hour">1h</string>
+    <string name="half_hour">30min</string>
+    <string name="logovi">Logs</string>
+    <string name="parking1">Parking1</string>
+    <string name="parking3">Parking3</string>
+    <string name="parking2">Parking2</string>
+    <string name="misc">Misc</string>
+    <string name="about_string">About</string>
+    <string name="sparks">SPARKS</string>
+    <string name="welcome">Welcome</string>
+    <string name="settings_string">Settings</string>
+    <string name="profile_string">Profile settings</string>
+    <string name="home_string">Home</string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="sync_title">Sync email periodically</string>
+    <string name="language_title">Language</string>
+    <string name="about_app">About</string>
+    <string name="zone_title">Zone</string>
+    <string name="reply_title">Default reply action</string>
+    <string name="signature_title">Your signature</string>
+    <string name="sync_header">Sync</string>
+    <string name="messages_header">Messages</string>
+    <string name="choose_language">English</string>
+    <string name="report_string">Send feedback</string>
+    <string name="manual_string">How to use</string>
+    <string name="warning_title">Report an error</string>
+    <string name="how_to_use">How to use</string>
+    <string name="color_title">Change theme</string>
+    <string name="error_info">Error info</string>
+    <string name="hint1">License plate number:</string>
+    <string name="zone_filter">Search by zones</string>
+    <string name="hint2">Choose parking duration</string>
+    <string name="price">Price</string>
+    <string name="parking_name">Parking name</string>
+    <string name="parking_time">Parking duration</string>
+    <string name="parking_load">Currently occupied</string>
+    <string name="duration_5m">Period: 5m</string>
+    <string name="duration_1h">Period: 1h</string>
+    <string name="book_parking">Book parking</string>
+    <string name="remaining_time">Remaining parking time</string>
+    <string name="reduction_time">Choose reduction period</string>
+    <string name="information">Information</string>
+    <string name="blue">Blue</string>
+    <string name="red">Red</string>
+    <string name="green">Green</string>
+    <string name="pink">Pink</string>
+    <string name="yellow">Yellow</string>
+    <string name="all">All</string>
+    <string name="default_parking">Default parking</string>
+    <string name="default_plates">Default license plate number</string>
+    <string name="zone0">Zone 0</string>
+    <string name="zone1">Zone 1</string>
+    <string name="zone2">Zone 2</string>
+    <string name="parking_duration">Choose parking duration</string>
+    <string name="default_duration">Default parking duration</string>
+    <string name="about_app_value">The SPARK application is the result of a project from a Software Design course, it allows users to find free parking spots more easily and it provides them lots of useful information about parking lots in Banja Luka \n \n
+
+        Version:1.0</string>
+    <string name="how_to_use_value">1. First, you need to choose a destination, so that the application can show you information about parking lots within a 500 meter range \n
+        2. Choose a parking lot, then you need to provide your license plate number and the parking duration for which you intend to pay \n
+        3. Press send</string>
+    <string name="error_info_value">Send feedback</string>
+    <string name="gen_info">"General settings "</string>
+    <string name="info">Info</string>
+    <string name="glavne_aktivnosti">Main Activities</string>
+</resources>

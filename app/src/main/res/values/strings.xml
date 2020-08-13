@@ -1,10 +1,11 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="sr">
 
     <string name="navigation_bar_open">Open navigation bar</string>
     <string name="navigation_bar_close">Close navigation bar</string>
     <string name="app_name">SPARKS</string>
     <string name="action_settings">Settings</string>
-    <string name="nameValue" />
+    <string name="nameValue" translatable="false" />
     <string name="name">name</string>
     <string name="hint1">Broj registarskih tablica: </string>
     <string name="hint2">Izaberite vrijeme: </string>
@@ -59,4 +60,42 @@
     <string name="_5min">5min</string>
     <string name="_20min">20min</string>
     <string name="_30min">30min</string>
+    <string name="price">Cijena</string>
+    <string name="parking_name">Ime parkinga</string>
+    <string name="parking_time">Period zauzeća</string>
+    <string name="parking_load">Trenutno zauzeće</string>
+    <string name="duration_5m">Period: 5m</string>
+    <string name="duration_1h">Period: 1h</string>
+    <string name="book_parking">Rezervišite parking</string>
+    <string name="parking_duration">Izaberite period rezervacije</string>
+    <string name="remaining_time">Preostalo vrijeme na parkingu</string>
+    <string name="reduction_time">Izaberite period skraćenja</string>
+    <string name="information">Informacije</string>
+    <string name="blue">Plava</string>
+    <string name="red">Crvena</string>
+    <string name="green">Zelena</string>
+    <string name="pink">Roza</string>
+    <string name="yellow">Žuta</string>
+
+    <string name="info">Upravljanje informacijama</string>
+    <string name="gen_info">Opšte upravljanje</string>
+    <string name="all">Sve</string>
+
+    <string name="default_parking">Podrazumijevani parking</string>
+    <string name="default_duration">Podrazumijevani period zauzeća</string>
+    <string name="default_plates">Podrazumijevani broj registarskih tablica</string>
+
+    <string name="zone0">Zona 0</string>
+    <string name="zone1">Zona 1</string>
+    <string name="zone2">Zona 2</string>
+    <string name="about_app_value">Aplikacija SPARK je rezultat urađenog projekta iz predmeta Projektovanje Softvera, omogućava korisniku da lakše pronađe slobodno parking mjesto kao i da mu prikaže mnoštvo korisnih informacija o parkinzima u Banja Luci \n \n
+
+        Verzija:1.0</string>
+    <string name="how_to_use_value">1.Kao korisnik ove aplikacije potrebno je prvo da odaberete destinaciju, kako bi vam aplikacija mogla prikazati informacije o parking mjestima u krugu od 500 metara \n
+        2.odaberite parking, potom je potebno da unesete registarske tablice, vrijeme na koje se parking placa \n
+        3.nakon toga pritisnite posalji</string>
+
+    <string name="error_info_value">Prijavite grešku</string>
+    <string name="glavne_aktivnosti">Glavne aktivnosti</string>
+
 </resources>

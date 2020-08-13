@@ -6,15 +6,15 @@
     </string-array>
 
     <string-array name="choose_languages">
-        <item>Engleski</item>
+        <item>English</item>
         <item>Srpski</item>
     </string-array>
 
     <string-array name="choose_zone">
-        <item>Zona 0</item>
-        <item>Zona 1</item>
-        <item>Zona 2</item>
-        <item>Sve</item>
+        <item>@string/zone0</item>
+        <item>@string/zone1</item>
+        <item>@string/zone2</item>
+        <item>@string/all</item>
     </string-array>
 
     <string-array name="reply_values">
@@ -23,11 +23,11 @@
     </string-array>
 
     <string-array name="choose_color">
-        <item>Plava</item>
-        <item>Crvena</item>
-        <item>Zelena</item>
-        <item>Roza</item>
-        <item>Žuta</item>
+        <item>@string/blue</item>
+        <item>@string/yellow</item>
+        <item>@string/red</item>
+        <item>@string/green</item>
+        <item>@string/pink</item>
     </string-array>
 
     <string-array name="choose_parking">

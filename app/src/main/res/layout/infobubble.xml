@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/icon_parking"
-            android:text="Trenutno zauzeće: "
+            android:text="@string/parking_load"
             android:textSize="12sp" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_ocupation"
             android:layout_toRightOf="@+id/icon_parking"
-            android:text="Ime parkinga"
+            android:text="@string/parking_name"
             android:textSize="12sp" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
             android:layout_toRightOf="@+id/icon_parking"
-            android:text="Zona: "
+            android:text="@string/zone_title"
             android:textSize="12sp" />
 
         <Button

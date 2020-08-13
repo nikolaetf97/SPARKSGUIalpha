@@ -17,7 +17,7 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/drawer_toolbar"
-            app:title="Podešavanja"
+            app:title="@string/settings"
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@color/colorPrimary"

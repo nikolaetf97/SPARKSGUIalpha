@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <PreferenceCategory android:title="Podešavanja profila">
+    <PreferenceCategory android:title="@string/profile_string">
 
         <ListPreference
             app:defaultValue="true"
@@ -10,7 +10,7 @@
             app:entryValues="@array/choose_period"
             app:icon="@drawable/ic_map_black_24dp"
             app:key="parking"
-            app:title="Podrazumevani parking"
+            app:title="@string/default_parking"
             app:useSimpleSummaryProvider="true" />
         <ListPreference
             app:defaultValue="30min"
@@ -18,14 +18,14 @@
             app:entryValues="@array/choose_period"
             app:icon="@drawable/ic_access_time_black_24dp"
             app:key="period"
-            app:title="Podrazumevani period zauzeća"
+            app:title="@string/default_duration"
             app:useSimpleSummaryProvider="true" />
         <EditTextPreference
             android:defaultValue="true"
             android:key="registry_number"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="Podrazumevani broj registarskih tablica" />
+            android:title="@string/default_plates" />
     </PreferenceCategory>
 
 </PreferenceScreen>

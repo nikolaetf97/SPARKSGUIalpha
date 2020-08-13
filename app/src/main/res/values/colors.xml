@@ -3,6 +3,9 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#2196F3</color>
-    <color name="fabBackground">#868686</color>
+    <color name="fabBackground">#4CAF50</color>
+    <color name="red">#e03112</color>
     <color name="white">#ffffff</color>
+    <color name="yellow">#FFEB3B</color>
+    <color name="pink">#E91E63</color>
 </resources>

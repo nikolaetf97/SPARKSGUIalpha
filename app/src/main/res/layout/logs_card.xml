@@ -26,13 +26,13 @@
             android:layout_toRightOf="@+id/icon_parking"
             android:id="@+id/tv_ocupation"
             android:layout_alignParentTop="true"
-            android:text="Period zauzeća"
+            android:text="@string/parking_time"
             android:textSize="20sp"
             android:layout_height="wrap_content" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name"
-            android:text="Ime parkinga"
+            android:text="@string/parking_name"
             android:textSize="20sp"
             android:layout_toRightOf="@+id/icon_parking"
             android:layout_below="@+id/tv_ocupation"
@@ -45,7 +45,7 @@
             android:layout_toRightOf="@+id/icon_parking"
             android:layout_below="@+id/tv_name"
             android:textSize="20sp"
-            android:text="Cijena"
+            android:text="@string/price"
             android:layout_height="wrap_content" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

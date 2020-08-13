@@ -75,7 +75,7 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
-                    android:text="Period: 5m"
+                    android:text="@string/duration_5m"
                     android:textSize="21sp" />
 
                 <EditText

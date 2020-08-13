@@ -33,7 +33,7 @@ class CheckLeavingService: Service() {
 
         val notificationBuilder = NotificationCompat.Builder(this, "channel1")
             .setSmallIcon(R.drawable.parking_pin_large)
-            .setContentTitle("Preostalo vrijeme na parkingu")
+            .setContentTitle(getString(R.string.remaining_time))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_PROGRESS)
             .setCustomContentView(notificationViewsCollapsed)
