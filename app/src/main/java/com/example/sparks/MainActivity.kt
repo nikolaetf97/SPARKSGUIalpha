@@ -499,7 +499,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mapFragment?.init {
             if (it == OnEngineInitListener.Error.NONE) {
                 map = mapFragment!!.map
-                map!!.setCenter(GeoCoordinate(49.196261, -123.004773, 0.0), Map.Animation.NONE)
+                map!!.setCenter(GeoCoordinate(44.771926, 17.208906, 0.0), Map.Animation.NONE)
                 posManager = PositioningManager.getInstance()
                 posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
 
