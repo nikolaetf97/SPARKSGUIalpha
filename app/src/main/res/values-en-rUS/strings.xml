@@ -86,4 +86,10 @@
     <string name="description_hint">Description (optional)</string>
     <string name="add_button_text">ADD</string>
     <string name="empty_plate_input">Can\'t be empty</string>
+    <string name="add_plate">Add plate</string>
+    <string name="cancel">CANCEL</string>
+    <string name="plate_delete">Delete plates?</string>
+    <string name="plate_delete_msg">Are you sure you want to delete this plate?</string>
+    <string name="delete">DELETE</string>
+    <string name="plates">License plates</string>
 </resources>

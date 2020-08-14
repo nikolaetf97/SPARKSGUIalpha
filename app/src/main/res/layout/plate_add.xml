@@ -11,7 +11,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="25dp"
         android:layout_marginBottom="15dp"
-        android:text="CANCEL"
+        android:text="@string/cancel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -65,12 +65,11 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="129dp"
+        android:layout_width="159dp"
         android:layout_height="43dp"
         android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
         android:layout_marginTop="30dp"
-        android:text="Add plate"
+        android:text="@string/add_plate"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/plateInput"
         app:layout_constraintEnd_toEndOf="parent"

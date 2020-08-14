@@ -110,6 +110,12 @@
     <string name="special_letter3_plate" translatable="false">Đ</string>
     <string name="special_letter4_plate" translatable="false">Č</string>
     <string name="special_letter5_plate" translatable="false">Ć</string>
-    <string name="empty_plate_input">Ne moze biti prazno</string>
+    <string name="empty_plate_input">Ne može biti prazno</string>
+    <string name="add_plate">Dodaj tablice</string>
+    <string name="cancel">Otkaži</string>
+    <string name="plate_delete">Brisanje tablica?</string>
+    <string name="plate_delete_msg">Da li ste sigurni da želite izbrisati ove tablice?</string>
+    <string name="delete">Izbriši</string>
+    <string name="plates">Tablice</string>
 
 </resources>

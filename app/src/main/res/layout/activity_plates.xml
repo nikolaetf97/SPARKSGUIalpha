@@ -34,7 +34,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_chainStyle="spread_inside"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="Tablice" />
+                app:title="@string/plates" />
 
             <Button
                 android:id="@+id/addButton"
