@@ -67,6 +67,11 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity
+            android:name=".PlatesActivity"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <service
             android:name="com.here.android.mpa.service.MapService"
             android:label="HereMapService">

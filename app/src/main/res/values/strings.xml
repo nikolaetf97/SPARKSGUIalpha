@@ -89,7 +89,6 @@
     <string name="zone1">Zona 1</string>
     <string name="zone2">Zona 2</string>
     <string name="about_app_value">Aplikacija SPARK je rezultat urađenog projekta iz predmeta Projektovanje Softvera, omogućava korisniku da lakše pronađe slobodno parking mjesto kao i da mu prikaže mnoštvo korisnih informacija o parkinzima u Banja Luci \n \n
-
         Verzija:1.0</string>
     <string name="how_to_use_value">1.Kao korisnik ove aplikacije potrebno je prvo da odaberete destinaciju, kako bi vam aplikacija mogla prikazati informacije o parking mjestima u krugu od 500 metara \n
         2.odaberite parking, potom je potebno da unesete registarske tablice, vrijeme na koje se parking placa \n
@@ -97,5 +96,20 @@
 
     <string name="error_info_value">Prijavite grešku</string>
     <string name="glavne_aktivnosti">Glavne aktivnosti</string>
+
+    <string name="plates_button_text">TABLICE</string>
+    <string name="plates_limit" translatable="false">12</string>
+    <string name="description_limit" translatable="false">20</string>
+    <string name="plate_hint" translatable="false">E65A369</string>
+    <string name="plates_limit_text" translatable="false">%1$d / %2$s</string>
+    <string name="description_limit_text" translatable="false">%1$d / %2$s</string>
+    <string name="description_hint">Opis (neobavezno)</string>
+    <string name="add_button_text">DODAJ</string>
+    <string name="special_letter1_plate" translatable="false">Ž</string>
+    <string name="special_letter2_plate" translatable="false">Š</string>
+    <string name="special_letter3_plate" translatable="false">Đ</string>
+    <string name="special_letter4_plate" translatable="false">Č</string>
+    <string name="special_letter5_plate" translatable="false">Ć</string>
+    <string name="empty_plate_input">Ne moze biti prazno</string>
 
 </resources>

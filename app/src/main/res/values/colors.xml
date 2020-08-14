@@ -8,4 +8,5 @@
     <color name="white">#ffffff</color>
     <color name="yellow">#FFEB3B</color>
     <color name="pink">#E91E63</color>
+    <color name="emptyPlatesWarningColor">#FF0000</color>
 </resources>

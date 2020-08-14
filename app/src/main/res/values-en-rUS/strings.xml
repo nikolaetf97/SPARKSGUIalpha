@@ -82,4 +82,8 @@
     <string name="gen_info">"General settings "</string>
     <string name="info">Info</string>
     <string name="glavne_aktivnosti">Main Activities</string>
+    <string name="plates_button_text">PLATES</string>
+    <string name="description_hint">Description (optional)</string>
+    <string name="add_button_text">ADD</string>
+    <string name="empty_plate_input">Can\'t be empty</string>
 </resources>

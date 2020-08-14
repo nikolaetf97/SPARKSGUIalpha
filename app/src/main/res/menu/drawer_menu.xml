@@ -23,6 +23,9 @@
             android:title="@string/settings_string" />
 
         <item
+                android:id="@+id/nav_plates"
+                android:title="Tablice" />
+        <item
             android:id="@+id/nav_logs"
             android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/logovi" />
