@@ -28,6 +28,8 @@ class LogsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                 R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
 
+                R.id.nav_plates -> startActivity(Intent(this, PlatesActivity::class.java))
+
                 R.id.user_manual -> {
                     val alert= AlertDialog.Builder(this)
                     alert.setTitle(getString(R.string.how_to_use))
