@@ -117,5 +117,6 @@
     <string name="plate_delete_msg">Da li ste sigurni da želite izbrisati ove tablice?</string>
     <string name="delete">Izbriši</string>
     <string name="plates">Tablice</string>
+    <string name="exit_msg">Pritisnite još jednom da bi ste zatvorili aplikaciju!</string>
 
 </resources>

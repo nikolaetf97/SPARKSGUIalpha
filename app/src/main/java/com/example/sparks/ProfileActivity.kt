@@ -121,4 +121,21 @@ class ProfileActivity : AppCompatActivity(), NavigationView.OnNavigationItemSele
             .commit()
 
     }
+    override fun onRestart(){
+        super.onRestart()
+
+        val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        val lang = sharedPref.getString("LANG","sr")
+        val locale = Locale(lang!!)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+
+        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
+
+        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
+        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
+        recreate()
+    }
 }

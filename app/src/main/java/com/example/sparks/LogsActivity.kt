@@ -80,6 +80,22 @@ class LogsActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var drawer: DrawerLayout
     private val itemId = R.id.nav_logs
 
+    override fun onRestart() {
+        super.onRestart()
+        val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        val lang = sharedPref.getString("LANG","sr")
+        val locale = Locale(lang!!)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+
+        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
+
+        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
+        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
+        recreate()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
         val lang = sharedPref.getString("LANG","sr")

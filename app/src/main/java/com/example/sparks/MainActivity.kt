@@ -132,7 +132,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mHandler: Handler
     private lateinit var mRunnable: Runnable*/
     private val itemId = R.id.nav_home
+    private var backPressed: Long = 0
 
+    override fun onRestart() {
+        super.onRestart()
+        val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
+        val lang = sharedPref.getString("LANG","sr")
+        val locale = Locale(lang!!)
+        Locale.setDefault(locale)
+        val config = Configuration()
+        config.locale = locale
+        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
+
+        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
+
+        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
+        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
+        recreate()
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
@@ -299,7 +316,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            val exitToast = Toast.makeText(baseContext, getString(R.string.exit_msg), Toast.LENGTH_SHORT)
+            if (backPressed + 2000 > System.currentTimeMillis()){
+
+                finishAffinity()
+            }
+            else{
+                exitToast.show()
+            }
+            backPressed = System.currentTimeMillis();
         }
     }
 
