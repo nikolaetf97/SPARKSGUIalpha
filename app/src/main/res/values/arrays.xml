@@ -1,9 +1,5 @@
 <resources>
     <!-- Reply Preference -->
-    <string-array name="reply_entries">
-        <item>Reply</item>
-        <item>Reply to all</item>
-    </string-array>
 
     <string-array name="choose_languages">
         <item>English</item>
@@ -15,11 +11,6 @@
         <item>@string/zone1</item>
         <item>@string/zone2</item>
         <item>@string/all</item>
-    </string-array>
-
-    <string-array name="reply_values">
-        <item>reply</item>
-        <item>reply_all</item>
     </string-array>
 
     <string-array name="choose_color">

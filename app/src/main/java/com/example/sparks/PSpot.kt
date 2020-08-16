@@ -156,7 +156,16 @@ object PSpotSupplier{
 
     fun addMap(map: Map) = maps.add(map)
 
-    lateinit var  parkingSports: MutableSet<PSpot>
+    var  parkingSports: MutableSet<PSpot> = mutableSetOf(PSpot(44.809049, 17.209781, 20, 50, "Bingo"),
+        PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
+        PSpot(44.817937, 17.216730, 100, 120, "Hiper Kort"),
+        PSpot(44.816687, 17.211028, 50, 300, "FIS"),
+        PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
+
+
+    fun getNames(): List<String>{
+        return parkingSports.map { it.name }
+    }
 
     fun addPSpot(spot: PSpot){
         parkingSports.add(spot)
@@ -184,11 +193,7 @@ object PSpotSupplier{
     }
 
     fun init(){
-        parkingSports = mutableSetOf(PSpot(44.809049, 17.209781, 20, 50, "Bingo"),
-            PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
-            PSpot(44.817937, 17.216730, 100, 120, "Hiper Kort"),
-            PSpot(44.816687, 17.211028, 50, 300, "FIS"),
-            PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
+        //parkingSports =
     }
 }
 

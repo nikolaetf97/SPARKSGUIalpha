@@ -1,89 +1,26 @@
 package com.example.sparks
 
 import android.content.Context
-import android.content.Intent
-import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.AttributeSet
-import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ColorStateListInflaterCompat.inflate
-import androidx.core.content.res.ComplexColorCompat.inflate
 import androidx.core.widget.doOnTextChanged
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentContainerView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.navigation.NavigationView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.dialog_logs.view.*
-import java.util.*
-import java.util.zip.Inflater
 import kotlin.collections.ArrayList
 
-class PlatesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
-    override fun onRestart() {
-        super.onRestart()
-        val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
-        val lang = sharedPref.getString("LANG","sr")
-        val locale = Locale(lang!!)
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.locale = locale
-        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-
-        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
-
-        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
-        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
-        recreate()
-    }
-
+class PlatesActivity : NavigationBarActivity(R.id.nav_plates) {
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
-        val lang = sharedPref.getString("LANG","sr")
-        val locale = Locale(lang!!)
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.locale = locale
-        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_plates)
-
-        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
-        setSupportActionBar(toolbar)
-
-        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
-        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
-
-        val drawer: DrawerLayout = findViewById(R.id.drawer_layout)
-
-        val naviationView: NavigationView = findViewById(R.id.nav_view_drawer)
-
-        naviationView.setNavigationItemSelectedListener(this)
-
-        val toggle = ActionBarDrawerToggle(this, drawer, toolbar,
-            R.string.navigation_bar_open, R.string.navigation_bar_close)
-
-        drawer.addDrawerListener(toggle)
-
-        toggle.syncState()
-
+        setup(R.layout.activity_plates, null)
         loadData()
 
         val addButton = findViewById<Button>(R.id.addButton)
@@ -175,8 +112,6 @@ class PlatesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             }
         }
     }
-
-    private val itemId = R.id.nav_plates
 
     private lateinit var plates : ArrayList<PlatesData>
     private lateinit var adapter : PlatesAdapter
@@ -292,7 +227,7 @@ class PlatesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
         }
     }
 
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+    /*override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         if (p0.itemId != itemId) {
             when (p0.itemId) {
                 R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
@@ -354,7 +289,7 @@ class PlatesActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelec
             return true
         } else
             return false
-    }
+    }*/
 
     private fun specialButtonsInitialize(v : View)
     {

@@ -32,7 +32,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".About" />
+        <!--activity android:name=".About" /-->
 
         <activity
             android:name=".SettingsFragment"
@@ -54,18 +54,11 @@
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".MapActivity"
-            android:parentActivityName=".MainActivity"/>
-
         <activity
             android:name=".InformationActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity
-            android:name=".LogsActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity
             android:name=".PlatesActivity"

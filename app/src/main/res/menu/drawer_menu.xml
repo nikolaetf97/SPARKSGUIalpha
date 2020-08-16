@@ -23,8 +23,15 @@
             android:title="@string/settings_string" />
 
         <item
-                android:id="@+id/nav_plates"
-                android:title="@string/plates" />
+            android:id="@+id/nav_plates"
+            android:icon="@drawable/licence_plates"
+            android:title="@string/plates" />
+
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@drawable/ic_baseline_directions_car_24"
+            android:title="@strings/info" />
+
         <item
             android:id="@+id/nav_logs"
             android:icon="@drawable/ic_history_black_24dp"

@@ -1,25 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:locale="sr">
 
+
+    <!--string name="info">Informacije</string>-->
     <string name="navigation_bar_open">Open navigation bar</string>
     <string name="navigation_bar_close">Close navigation bar</string>
     <string name="app_name">SPARKS</string>
-    <string name="action_settings">Settings</string>
-    <string name="nameValue" translatable="false" />
-    <string name="name">name</string>
-    <string name="hint1">Broj registarskih tablica: </string>
-    <string name="hint2">Izaberite vrijeme: </string>
-    <string name="zone_filter">Pretraga po zonama </string>
     <string name="settings">Podešavanja</string>
     <string name="title_activity_settings">Settings</string>
     <string name="choose_language">Srpski</string>
     <!-- Preference Titles -->
-    <string name="messages_header">Messages</string>
-    <string name="sync_header">Sync</string>
 
     <!-- Messages Preferences -->
-    <string name="signature_title">Your signature</string>
-    <string name="reply_title">Default reply action</string>
 
     <string name="zone_title">Zona</string>
 
@@ -30,11 +22,6 @@
     <string name="language_title">Jezik</string>
     <string name="warning_title">Prijavite problem</string>
     <!-- Sync Preferences -->
-    <string name="sync_title">Sync email periodically</string>
-    <string name="attachment_title">Download incoming attachments</string>
-    <string name="attachment_summary_on">Automatically download attachments for incoming emails
-    </string>
-    <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="home_string">Početni ekran</string>
     <string name="profile_string">Podešavanja profila</string>
     <string name="settings_string">Podešavanja</string>
@@ -42,19 +29,10 @@
     <string name="report_string">Prijavite grešku</string>
     <string name="about_string">O aplikaciji</string>
     <string name="sparks">SPARKS</string>
-    <string name="welcome">Dobrodošli</string>
     <string name="misc">Ostalo</string>
     <string name="error_info">Unesite opis greške</string>
     <string name="color_title">Izaberite glavnu boju aplikacije</string>
-    <string name="parking1">Parking1</string>
-    <string name="parking3">Parking3</string>
-    <string name="parking2">Parking2</string>
     <string name="logovi">Logovi</string>
-    <string name="half_hour">30min</string>
-    <string name="one_hour">1h</string>
-    <string name="two_hours">2h</string>
-    <string name="three_hours">3h</string>
-    <string name="four_hours">4h</string>
     <string name="_15min">15min</string>
     <string name="_10min">10min</string>
     <string name="_5min">5min</string>
@@ -97,7 +75,6 @@
     <string name="error_info_value">Prijavite grešku</string>
     <string name="glavne_aktivnosti">Glavne aktivnosti</string>
 
-    <string name="plates_button_text">TABLICE</string>
     <string name="plates_limit" translatable="false">12</string>
     <string name="description_limit" translatable="false">20</string>
     <string name="plate_hint" translatable="false">E65A369</string>

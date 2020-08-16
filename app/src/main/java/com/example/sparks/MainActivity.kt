@@ -1,27 +1,22 @@
 package com.example.sparks
 
 import android.content.Context
-import android.content.Intent
+import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
 import android.telephony.SmsManager
-import android.view.MenuItem
 import android.widget.*
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.android.material.navigation.NavigationView
 import com.here.android.mpa.common.*
 import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
@@ -29,83 +24,10 @@ import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main.fab
 import kotlinx.android.synthetic.main.activity_main.registryNumberEditText
-import kotlinx.android.synthetic.main.activity_parking.*
-import kotlinx.android.synthetic.main.dialog_logs.view.*
 import java.lang.ref.WeakReference
 import java.util.*
 
-
-/*
-*
-* TODO("Jednostavije bi bilo da na MainActivity se unesu tablice itd.. da se ne komplikuje sa 2 mape")
-*
-* */
-
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        if (p0.itemId != itemId) {
-            when (p0.itemId) {
-                R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
-
-                R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
-
-                R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
-
-                R.id.nav_plates -> startActivity(Intent(this, PlatesActivity::class.java))
-
-                R.id.user_manual -> {
-                    val alert = AlertDialog.Builder(this)
-                    alert.setTitle(getString(R.string.how_to_use))
-                    alert.setMessage(getString(R.string.how_to_use_value))
-                    alert.setPositiveButton("OK") { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                    alert.show()
-                }
-                R.id.report_error -> {
-                    val builder = AlertDialog.Builder(this)
-                    val inflater = layoutInflater
-                    builder.setTitle(getString(R.string.error_info_value))
-                    val dialogLayout = inflater.inflate(R.layout.error_dialog, null)
-                    val editText = dialogLayout.findViewById<EditText>(R.id.editText)
-                    builder.setView(dialogLayout)
-                    builder.setPositiveButton("OK") { dialog, _ ->
-                        val emailIntent = Intent(Intent.ACTION_SEND)
-                        emailIntent.setType("text/plain")
-                        emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("spark-feedback@outlook.com"))
-                        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback")
-                        emailIntent.putExtra(Intent.EXTRA_TEXT, editText.text)
-                        emailIntent.setType("message/rfc822")
-                        startActivity(Intent.createChooser(emailIntent, "Send email using..."))
-                    }
-                    builder.show()
-                }
-
-                R.id.about -> {
-                    val alert = AlertDialog.Builder(this)
-                    alert.setTitle(getString(R.string.about_app))
-                    alert.setMessage(getString(R.string.about_app_value))
-                    alert.setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
-                    alert.show()
-                }
-
-                R.id.nav_logs -> {
-                    val logsLayout = layoutInflater.inflate(R.layout.dialog_logs, null)
-                    val logsDialog = AlertDialog.Builder(this)
-                    logsDialog.setView(logsLayout)
-                    logsDialog.setTitle(getString(R.string.logovi))
-                    logsLayout.recycler_view.layoutManager = LinearLayoutManager(this)
-                    logsLayout.recycler_view.adapter = LogDataAdapter(this, Supplier.logData)
-                    logsDialog.setPositiveButton("Ok") { dialog, _ -> dialog.dismiss() }
-                    logsDialog.show()
-                    return false
-                }
-            }
-            return true
-        } else
-            return false
-
-    }
+class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
     companion object {
         var DESTINATION: MapMarker? = null
@@ -124,61 +46,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var posManager: PositioningManager
     private lateinit var router: CoreRouter
     private var parkingListener: PositioningManager.OnPositionChangedListener? = null
-
-    private lateinit var drawer: DrawerLayout
     private lateinit var notificationManager: NotificationManagerCompat
 
-    /*private lateinit var mRandom: Random
-    private lateinit var mHandler: Handler
-    private lateinit var mRunnable: Runnable*/
-    private val itemId = R.id.nav_home
-    private var backPressed: Long = 0
 
-    override fun onRestart() {
-        super.onRestart()
-        val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
-        val lang = sharedPref.getString("LANG","sr")
-        val locale = Locale(lang!!)
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.locale = locale
-        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-
-        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
-
-        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
-        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
-        recreate()
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setup(R.layout.activity_main, fab)
 
         val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
-        val lang = sharedPref.getString("LANG","sr")
-        val locale = Locale(lang!!)
-        Locale.setDefault(locale)
-        val config = Configuration()
-        config.locale = locale
-        baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
-
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)
-        setSupportActionBar(toolbar)
 
 
-        setTheme(sharedPref.getInt("THEME",R.style.AppTheme))
-        toolbar.setBackgroundColor(sharedPref.getInt("BACKGROUND",resources.getColor(R.color.colorPrimary)))
-
-        drawer = findViewById(R.id.drawer_layout)
-        val naviationView: NavigationView = findViewById(R.id.nav_view_drawer)
-        naviationView.setNavigationItemSelectedListener(this)
-        val toggle = ActionBarDrawerToggle(
-            this, drawer, toolbar,
-            R.string.navigation_bar_open, R.string.navigation_bar_close
-        )
-        drawer.addDrawerListener(toggle)
-        toggle.syncState()
         notificationManager = NotificationManagerCompat.from(this)
         periodTextView.setOnClickListener{
             val builder = AlertDialog.Builder(this)
@@ -243,6 +120,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     OneTimeWorkRequestBuilder<CheckArrivalWorker>().build())
         }
 
+        fab.backgroundTintList = ColorStateList.valueOf(
+            sharedPref.getInt("BACKGROUND",
+                resources.getColor(R.color.colorPrimary)))
+
         swipeContainer.setOnRefreshListener {
             Handler().postDelayed({
                 swipeContainer.isRefreshing = false
@@ -257,75 +138,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             android.R.color.holo_red_light
         )
 
-        /*
-        mHandler = Handler()
-        mRandom = Random()
-
-        swipeContainer.setOnRefreshListener {
-
-            mRunnable = Runnable {
-                swipeContainer.isRefreshing = false
-                ShowPreferableSpotsTask(map!!, lastPos!!.coordinate)
-
-                //showRoute()
-                /*val quickExtendIntent = Intent(this, QuickExtendBroadcastReceiver::class.java)
-
-                val goBackToAppPending = PendingIntent.getActivity(this, 0,
-                    Intent(this, MainActivity::class.java), 0)
-
-                val notificationViews = RemoteViews(packageName, R.layout.notification_layout)
-
-                notificationViews.setOnClickPendingIntent(R.id.quickExtendTimer, PendingIntent.getActivity(
-                    this, 0, quickExtendIntent, 0
-                ))
-
-                val notificationBuilder = NotificationCompat.Builder(this, "channel1")
-                    .setSmallIcon(R.drawable.parking_pin_large)
-                    .setContentTitle("Preostalo vrijeme na parkingu")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_PROGRESS)
-                    .setCustomContentView(RemoteViews(
-                        packageName, R.layout.notification_layout
-                    ))
-                    .setContentIntent(goBackToAppPending)
-                    .setOnlyAlertOnce(true)
-                    .setOngoing(true)
-
-                val notification = notificationBuilder.build()
-
-                notificationManager.notify(1, notification)*/
-
-
-            }
-
-            mHandler.postDelayed(mRunnable, ((Random().nextInt(4) + 1) * 1000).toLong())
-        }
-        swipeContainer.setColorSchemeResources(
-            android.R.color.holo_blue_bright,
-            android.R.color.holo_green_light,
-            android.R.color.holo_orange_light,
-            android.R.color.holo_red_light
-        )
-*/
-
         initialize()
         initGetPSpotsWorker()
-    }
-
-    override fun onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else {
-            val exitToast = Toast.makeText(baseContext, getString(R.string.exit_msg), Toast.LENGTH_SHORT)
-            if (backPressed + 2000 > System.currentTimeMillis()){
-
-                finishAffinity()
-            }
-            else{
-                exitToast.show()
-            }
-            backPressed = System.currentTimeMillis();
-        }
     }
 
     private fun routeListenerFactory(): CoreRouter.Listener {
@@ -375,13 +189,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             override fun onMultiFingerManipulationEnd() {}
 
-            /*
-            *
-            * Na dvoklik se postavlja marker, jer
-            * na jedan klik na marker se dobija info o njemu
-            *
-            * */
-
             override fun onDoubleTapEvent(p0: PointF): Boolean {
                 if (lastPos != null)
                     map!!.removeMapObject(lastPos!!)
@@ -423,7 +230,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
                         val spots =
                             PSpotSupplier.parkingSports.filter { spot -> spot.getMarker() == viewObject }
-                        if (!spots.isEmpty()) {
+                        if (spots.isNotEmpty()) {
                             val spot = spots[0]
 
                             val view = layoutInflater.inflate(R.layout.infobubble, null)
@@ -515,14 +322,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mapFragment =
             supportFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment?
 
-        /*val success: Boolean = MapSettings.setIsolatedDiskCacheRootPath(
-            applicationContext.getExternalFilesDir(null)!!.absolutePath + File.separator + ".here-maps"
-        )
-
-        if(!success)
-            Toast.makeText(applicationContext, "Unable to set isolated disk cache path",
-                Toast.LENGTH_LONG).show()
-        else{*/
         mapFragment?.init {
             if (it == OnEngineInitListener.Error.NONE) {
                 map = mapFragment!!.map
@@ -530,7 +329,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 posManager = PositioningManager.getInstance()
                 posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
 
-                // Define positioning listener
 
                 val positionListener: PositioningManager.OnPositionChangedListener =
                     object : PositioningManager.OnPositionChangedListener {
@@ -541,11 +339,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             if (position != null) {
 
                                 mapFragment!!.positionIndicator!!.isVisible = true
-
-                                /*Toast.makeText(applicationContext, "Pozicija " + String.format(
-                                        Locale.US, "%.6f, %.6f", position.coordinate.longitude, position.coordinate.latitude)
-                                        , Toast.LENGTH_LONG).show()*/
-                                currPos = position!!.coordinate
+                                currPos = position.coordinate
                             }
 
                         }
@@ -556,8 +350,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         ) {
                         }
                     }
-
-                // Register positioning listener
 
                 posManager.addListener(
                     WeakReference(positionListener)
@@ -586,10 +378,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 ).show()
 
         }
-        //}
     }
 
-    private fun addNewPosListener() {
+    /*private fun addNewPosListener() {
         if (parkingListener == null) {
             parkingListener =
                 object : PositioningManager.OnPositionChangedListener {
@@ -626,7 +417,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 WeakReference(parkingListener)
             )
         }
-    }
+    }*/
 
     private fun initGetPSpotsWorker(){
         val getPSpotsWorker = OneTimeWorkRequestBuilder<GetPSpotsWorker>()
@@ -642,25 +433,3 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 }
-
-/* override fun onCreateOptionsMenu(menu: Menu): Boolean {
-     // Inflate the menu; this adds items to the action bar if it is present.
-     menuInflater.inflate(R.menu.menu_main, menu)
-     return true
- }
-
- override fun onOptionsItemSelected(item: MenuItem): Boolean {
-     // Handle action bar item clicks here. The action bar will
-     // automatically handle clicks on the Home/Up button, so long
-     // as you specify a parent activity in AndroidManifest.xml.
-     return when (item.itemId) {
-         R.id.action_settings -> {
-             this.startActivity(Intent(this, SettingsActivity::class.java))
-             return true
-         }
-
-         else -> super.onOptionsItemSelected(item)
-
-
-     }
- }*/

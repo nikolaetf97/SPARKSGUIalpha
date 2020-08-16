@@ -1,20 +1,16 @@
 package com.example.sparks
 
 import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
-import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.widget.doAfterTextChanged
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.work.*
 import com.google.android.material.navigation.NavigationView
 import com.here.android.mpa.common.*
@@ -25,14 +21,13 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_parking.*
 import kotlinx.android.synthetic.main.activity_parking.fab
 import kotlinx.android.synthetic.main.activity_parking.registryNumberEditText
-import kotlinx.android.synthetic.main.dialog_logs.view.*
 import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 
-class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class SelectParkingActivity : NavigationBarActivity() {
 
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+    /*override fun onNavigationItemSelected(p0: MenuItem): Boolean {
         when (p0.itemId) {
             R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
 
@@ -93,7 +88,7 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
             }
         }
         return true
-    }
+    }*/
 
     private var pastOverlay: MapOverlay? = null
     private var  lastPos: MapMarker?= null      //trenutna desitnacija parkinga
@@ -160,7 +155,7 @@ class SelectParkingActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         drawer.addDrawerListener(toggle)
         toggle.syncState()
 
-        smsNumber = "+38765581702" //tmp broj kupicu neki broj kasnije za testiranje
+        smsNumber = "+38765185060" //broj samo za servis
 
 
         swipeContainer.setColorSchemeColors(
