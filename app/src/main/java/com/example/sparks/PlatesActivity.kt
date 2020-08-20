@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.view.children
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -15,9 +16,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.activity_plates.*
 import kotlin.collections.ArrayList
 
 class PlatesActivity : NavigationBarActivity(R.id.nav_plates) {
+
+    private var enableEdit=true
+    private var enableAdd=true
+    private lateinit var swipeToDeleteCallback : SwipeToDeleteCallback
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setup(R.layout.activity_plates, null)
@@ -36,15 +43,12 @@ class PlatesActivity : NavigationBarActivity(R.id.nav_plates) {
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
         val context = this
-        val swipeToDeleteCallback = object : SwipeToDeleteCallback(){
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                if(multiDeleteControl==1)
-                {
-                    adapter.notifyItemChanged(viewHolder.adapterPosition)
-                    return
-                }
+        swipeToDeleteCallback = object : SwipeToDeleteCallback(){
 
-                multiDeleteControl=1
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                if(!enableSwipe) return
+
+                setClickable(false)
                 val alertDialog = AlertDialog.Builder(context)
                 alertDialog.setTitle(R.string.plate_delete)
                 alertDialog.setMessage(R.string.plate_delete_msg)
@@ -56,7 +60,7 @@ class PlatesActivity : NavigationBarActivity(R.id.nav_plates) {
                 }
                 alertDialog.setOnDismissListener {
                     adapter.notifyItemChanged(viewHolder.adapterPosition)
-                    multiDeleteControl=0
+                    setClickable(true)
                 }
                 alertDialog.show()
             }
@@ -65,49 +69,77 @@ class PlatesActivity : NavigationBarActivity(R.id.nav_plates) {
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(recyclerView)
 
-        addButton.setOnClickListener{
-            val dialogView = layoutInflater.inflate(R.layout.plate_add, null)
 
-            val builder = AlertDialog.Builder(this).setView(dialogView)
 
-            val pI = dialogView.findViewById<EditText>(R.id.plateInput)
-            val dsc = dialogView.findViewById<EditText>(R.id.description)
-            val pL = dialogView.findViewById<TextView>(R.id.plateLimit)
-            val dscL = dialogView.findViewById<TextView>(R.id.descriptionLimit)
+        addButton.setOnClickListener {
+            if (enableAdd) {
+                setClickable(false)
 
-            pL.text = String.format(resources.getString(R.string.plates_limit_text), pI.text.length, resources.getString(R.string.plates_limit))
-            dscL.text = String.format(resources.getString(R.string.description_limit_text), dsc.text.length, resources.getString(R.string.description_limit))
+                val dialogView = layoutInflater.inflate(R.layout.plate_add, null)
 
-            specialButtonsInitialize(dialogView)
+                val builder = AlertDialog.Builder(this).setView(dialogView)
 
-            val customDialog = builder.show()
+                val pI = dialogView.findViewById<EditText>(R.id.plateInput)
+                val dsc = dialogView.findViewById<EditText>(R.id.description)
+                val pL = dialogView.findViewById<TextView>(R.id.plateLimit)
+                val dscL = dialogView.findViewById<TextView>(R.id.descriptionLimit)
 
-            pI.doOnTextChanged { _, _, _, _ ->
-                pL.text = String.format(resources.getString(R.string.plates_limit_text), pI.text.length, resources.getString(R.string.plates_limit))
-            }
+                pL.text = String.format(
+                    resources.getString(R.string.plates_limit_text),
+                    pI.text.length,
+                    resources.getString(R.string.plates_limit)
+                )
+                dscL.text = String.format(
+                    resources.getString(R.string.description_limit_text),
+                    dsc.text.length,
+                    resources.getString(R.string.description_limit)
+                )
 
-            dsc.doOnTextChanged { _, _, _, _ ->
-                dscL.text = String.format(resources.getString(R.string.description_limit_text), dsc.text.length, resources.getString(R.string.description_limit))
-            }
+                specialButtonsInitialize(dialogView)
 
-            val btDismiss = dialogView.findViewById<Button>(R.id.cancelButton)
-            btDismiss.setOnClickListener(){
-                customDialog.dismiss()
-            }
+                val customDialog = builder.show()
 
-            val confirmButton = dialogView.findViewById<Button>(R.id.confirmButton)
-
-            confirmButton.setOnClickListener {
-                if(pI.text.toString().trim().isEmpty())
-                {
-                    pI.hint = resources.getString(R.string.empty_plate_input)
-                    pI.setHintTextColor(ContextCompat.getColor(context, R.color.emptyPlatesWarningColor))
+                customDialog.setOnDismissListener {
+                    setClickable(true)
                 }
-                else
-                {
-                    saveData(pI.text.toString(), dsc.text.toString())
-                    adapter.notifyItemInserted(adapter.itemCount)
+
+                pI.doOnTextChanged { _, _, _, _ ->
+                    pL.text = String.format(
+                        resources.getString(R.string.plates_limit_text),
+                        pI.text.length,
+                        resources.getString(R.string.plates_limit)
+                    )
+                }
+
+                dsc.doOnTextChanged { _, _, _, _ ->
+                    dscL.text = String.format(
+                        resources.getString(R.string.description_limit_text),
+                        dsc.text.length,
+                        resources.getString(R.string.description_limit)
+                    )
+                }
+
+                val btDismiss = dialogView.findViewById<Button>(R.id.cancelButton)
+                btDismiss.setOnClickListener() {
                     customDialog.dismiss()
+                }
+
+                val confirmButton = dialogView.findViewById<Button>(R.id.confirmButton)
+
+                confirmButton.setOnClickListener {
+                    if (pI.text.toString().trim().isEmpty()) {
+                        pI.hint = resources.getString(R.string.empty_plate_input)
+                        pI.setHintTextColor(
+                            ContextCompat.getColor(
+                                context,
+                                R.color.emptyPlatesWarningColor
+                            )
+                        )
+                    } else {
+                        saveData(pI.text.toString(), dsc.text.toString())
+                        adapter.notifyItemInserted(adapter.itemCount)
+                        customDialog.dismiss()
+                    }
                 }
             }
         }
@@ -115,7 +147,6 @@ class PlatesActivity : NavigationBarActivity(R.id.nav_plates) {
 
     private lateinit var plates : ArrayList<PlatesData>
     private lateinit var adapter : PlatesAdapter
-    private var multiDeleteControl = 0
 
     private fun saveData(name : String, description : String)
     {
@@ -150,14 +181,24 @@ class PlatesActivity : NavigationBarActivity(R.id.nav_plates) {
         plates = gson.fromJson<ArrayList<PlatesData>>(json, itemType) ?: ArrayList<PlatesData>()
     }
 
+    private fun setClickable(clickable: Boolean)
+    {
+        enableAdd=clickable
+        enableEdit=clickable
+        swipeToDeleteCallback.enableSwipe=clickable
+    }
+
     private fun itemClicked(item : PlatesData){
-        if(multiDeleteControl==1) return
-        multiDeleteControl=1
+        if(!enableEdit) return
+
+        setClickable(false)
+
         val dialogView = layoutInflater.inflate(R.layout.plate_add, null)
 
         val builder = AlertDialog.Builder(this).setView(dialogView)
 
-        builder.setOnDismissListener { multiDeleteControl=0 }
+        builder.setOnDismissListener {
+            setClickable(true)}
 
         val nameView = dialogView.findViewById<TextView>(R.id.plateInput)
         val descriptionView = dialogView.findViewById<TextView>(R.id.description)
