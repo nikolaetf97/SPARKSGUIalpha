@@ -2,18 +2,14 @@ package com.example.sparks
 
 import android.content.Context
 import android.content.res.ColorStateList
-import android.content.res.Configuration
 import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
-import android.telephony.SmsManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
 import androidx.core.widget.doAfterTextChanged
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -32,7 +28,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
     companion object {
         var DESTINATION: MapMarker? = null
     }
-
+    private var backPressed: Long = 0
     private var destinationSelected: Boolean = false
     private var platesSelected: Boolean = false
     private var periodSelected: Boolean = false
@@ -127,9 +123,14 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         swipeContainer.setOnRefreshListener {
             Handler().postDelayed({
                 swipeContainer.isRefreshing = false
-                showRoute()}
-                ,((Random().nextInt(4) + 1) * 1000).toLong())
-        }
+
+                when {
+                    DESTINATION == null -> Toast.makeText(this, "Niste izabrali parking", Toast.LENGTH_LONG).show()
+                    currPos == null -> Toast.makeText(this, "Molimo sačekajte", Toast.LENGTH_LONG).show()
+                    else -> showRoute()
+                }
+            }
+                ,((Random().nextInt(4) + 1) * 1000).toLong()) }
 
         swipeContainer.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -142,7 +143,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         initGetPSpotsWorker()
     }
 
-    private fun routeListenerFactory(): CoreRouter.Listener {
+    private fun routerListenerFactory(): CoreRouter.Listener {
         return object : CoreRouter.Listener {
             override fun onCalculateRouteFinished(p0: MutableList<RouteResult>?, p1: RoutingError) {
                 if (p1 == RoutingError.NONE) {
@@ -159,7 +160,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         }
     }
 
-    private fun markerListenerFactory(): MapGesture.OnGestureListener {
+    private fun gestureListenerFactory(): MapGesture.OnGestureListener {
         return object : MapGesture.OnGestureListener {
 
             override fun onLongPressRelease() {}
@@ -313,7 +314,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
             routePlan.routeOptions = routeOptions
 
-            router.calculateRoute(routePlan, routeListenerFactory())
+            router.calculateRoute(routePlan, routerListenerFactory())
         }
     }
 
@@ -327,8 +328,6 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                 map = mapFragment!!.map
                 map!!.setCenter(GeoCoordinate(44.771926, 17.208906, 0.0), Map.Animation.NONE)
                 posManager = PositioningManager.getInstance()
-                posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
-
 
                 val positionListener: PositioningManager.OnPositionChangedListener =
                     object : PositioningManager.OnPositionChangedListener {
@@ -355,6 +354,8 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                     WeakReference(positionListener)
                 )
 
+                posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
+
                 map!!.setCenter(
                     posManager.position.coordinate,
                     Map.Animation.NONE
@@ -362,11 +363,10 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                 )
 
                 map!!.zoomLevel = (map!!.maxZoomLevel + map!!.minZoomLevel) / 2
-                posManager.position
-                mapFragment!!.mapGesture!!.addOnGestureListener(markerListenerFactory(), 1, false)
+                mapFragment!!.mapGesture!!.addOnGestureListener(gestureListenerFactory(), 1, false)
                 router = CoreRouter()
 
-                PSpotSupplier.init()
+                PSpotSupplier.init(applicationContext)
 
                 map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
                 PSpotSupplier.addMap(map!!)
@@ -431,5 +431,21 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
             .then(processPSpotsWorker)
             .enqueue()
 
+    }
+
+    override fun onBackPressed() {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
+        } else {
+            val exitToast = Toast.makeText(baseContext, getString(R.string.exit_msg), Toast.LENGTH_SHORT)
+            if (backPressed + 2000 > System.currentTimeMillis()){
+
+                finishAffinity()
+            }
+            else{
+                exitToast.show()
+            }
+            backPressed = System.currentTimeMillis()
+        }
     }
 }

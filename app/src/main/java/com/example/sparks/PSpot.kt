@@ -1,10 +1,21 @@
 package com.example.sparks
 
+import android.content.Context
+import android.widget.Toast
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.Image
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.mapping.MapMarker
-import java.util.function.DoubleBinaryOperator
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.stringify
+import java.io.File
 
 /*
 *
@@ -12,9 +23,12 @@ import java.util.function.DoubleBinaryOperator
 *
 * */
 
+
+@Serializable
 data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, val space: Int,
                  val name: String = "", val zone: Int = 0){
 
+    @Transient
     private var marker: MapMarker = initMapMarker()
 
     private var hasChanged = false
@@ -144,6 +158,8 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
     }
 
 }
+
+//44.818818, 17.210356
 /*
 * Dodao sam da posalje numberOfSpaces, da bi mogao racunati zauzetost
 * pretpostavka da je parking jedinstveno identifikovan
@@ -156,11 +172,7 @@ object PSpotSupplier{
 
     fun addMap(map: Map) = maps.add(map)
 
-    var  parkingSports: MutableSet<PSpot> = mutableSetOf(PSpot(44.809049, 17.209781, 20, 50, "Bingo"),
-        PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
-        PSpot(44.817937, 17.216730, 100, 120, "Hiper Kort"),
-        PSpot(44.816687, 17.211028, 50, 300, "FIS"),
-        PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
+    lateinit var  parkingSports: MutableSet<PSpot>
 
 
     fun getNames(): List<String>{
@@ -188,12 +200,43 @@ object PSpotSupplier{
             spot.getMarker().isVisible = true
         }
 
+        spots[0].expandMarker()
+
+        MainActivity.DESTINATION = spots[0].getMarker()
+
+
 
         return spots
     }
 
-    fun init(){
-        //parkingSports =
+    fun init(applicationContext: Context) {
+        val psFile = File(applicationContext.filesDir.path, "ps.pspots")
+
+        if(!psFile.exists())
+            loadTestPSpots(applicationContext)
+        else{
+
+            //Toast.makeText(applicationContext, "fail", Toast.LENGTH_LONG).show()
+            val tmp = Json{}
+                .decodeFromJsonElement<Set<PSpot>>(
+                    Json{}
+                        .parseToJsonElement(psFile.readText())
+                )
+        }
+    }
+
+    private fun loadTestPSpots(applicationContext: Context) {
+        parkingSports = mutableSetOf(PSpot(44.809049, 17.209781, 20, 50, "Bingo"),
+            PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
+            PSpot(44.817937, 17.216730, 100, 120, "Hiper Kort"),
+            PSpot(44.816687, 17.211028, 50, 300, "FIS"),
+            PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
+        val tmp = Json{
+         isLenient = true
+        }.encodeToString(SetSerializer(PSpot.serializer()),
+            parkingSports)
+        //Toast.makeText(applicationContext, tmp, Toast.LENGTH_LONG).show()
+
     }
 }
 

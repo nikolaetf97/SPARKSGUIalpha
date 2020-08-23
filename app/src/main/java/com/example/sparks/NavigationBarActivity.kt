@@ -21,8 +21,8 @@ import java.util.*
 
 abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
- private lateinit var drawer: DrawerLayout
- private var backPressed: Long = 0
+ protected lateinit var drawer: DrawerLayout
+ //private var backPressed: Long = 0
 
  protected fun setup(
   layoutID: Int,
@@ -64,7 +64,7 @@ abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatAct
                 resources.getColor(R.color.colorPrimary))))
  }
 
- override fun onBackPressed() {
+ /*override fun onBackPressed() {
   if (drawer.isDrawerOpen(GravityCompat.START)) {
    drawer.closeDrawer(GravityCompat.START)
   } else {
@@ -78,10 +78,11 @@ abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatAct
    }
    backPressed = System.currentTimeMillis()
   }
- }
+ }*/
 
  override fun onNavigationItemSelected(p0: MenuItem): Boolean {
   if (p0.itemId != itemId) {
+
    when (p0.itemId) {
 
     R.id.nav_info -> startActivity(Intent(this, InformationActivity::class.java))
@@ -144,6 +145,9 @@ abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatAct
      return false
     }
    }
+
+   drawer.closeDrawer(GravityCompat.START, false)
+
     return true
   } else
     return false
