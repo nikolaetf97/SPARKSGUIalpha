@@ -42,8 +42,9 @@ class CheckArrivalWorker(
 ): Worker(context, workerParams){
 
     override fun doWork(): Result {
+
         Handler(Looper.getMainLooper()).post {
-            Toast.makeText(applicationContext, "Checking arrival...", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "Current pos: " + MainActivity.posManager!!.position.coordinate, Toast.LENGTH_LONG).show()
         }
 
 
@@ -52,7 +53,7 @@ class CheckArrivalWorker(
         if(MainActivity
                 .DESTINATION!!
                 .coordinate
-                .distanceTo(SelectParkingActivity.posManager!!.position.coordinate) < 30){
+                .distanceTo(MainActivity.posManager!!.position.coordinate) < 30){
 
             val serviceIntent = Intent(applicationContext, CheckLeavingService::class.java)
 

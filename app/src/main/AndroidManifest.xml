@@ -34,16 +34,16 @@
 
         <!--activity android:name=".About" /-->
 
-        <activity
+        <!--activity
             android:name=".SettingsFragment"
             android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity" /-->
 
-        <activity
+        <!--activity
             android:name=".SelectParkingActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            />
+            /-->
 
         <activity
             android:name=".ProfileActivity"

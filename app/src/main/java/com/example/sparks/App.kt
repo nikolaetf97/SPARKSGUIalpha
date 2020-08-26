@@ -4,15 +4,12 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
+import android.widget.Toast
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.decodeFromJsonElement
+import java.io.File
 
 class App : Application() {
-
-
-    /*
-    *
-    * TODO("Napravi da bude samo jedan activity za podesavanja")
-    *
-    * */
     companion object{
         val channelID: String  = "channel1"
         var notificationManager: NotificationManager? = null
@@ -20,7 +17,6 @@ class App : Application() {
 
     override fun onCreate(){
         super.onCreate()
-
         createNotificationChannel()
     }
 
@@ -40,4 +36,5 @@ class App : Application() {
 
 
     }
+
 }

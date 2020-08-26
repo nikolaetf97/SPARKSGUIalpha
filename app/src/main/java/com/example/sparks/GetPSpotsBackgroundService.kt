@@ -138,8 +138,8 @@ class ProcessPSpotsWorker(context: Context,
                         destination.get("name").toString()
                     )
 
-                    if (PSpotSupplier.parkingSports.contains(tmp)) {
-                        PSpotSupplier.parkingSports.find { spot -> spot == tmp }!!
+                    if (PSpotSupplier.parkingSpots.contains(tmp)) {
+                        PSpotSupplier.parkingSpots.find { spot -> spot == tmp }!!
                             .setFreeSpaces(tmp.freeSpace)
                     } else
                         PSpotSupplier.addPSpot(tmp)
@@ -205,7 +205,7 @@ object GetPSpotsTask: AsyncTask<Unit, Unit, String>(){
 
     override fun onPostExecute(result: String?) {
 
-        if(result!=null){
+        /*if(result!=null){
             //ovde treba to procitati JSON
 
             val jsonArray= JSONArray(result)
@@ -247,6 +247,6 @@ object GetPSpotsTask: AsyncTask<Unit, Unit, String>(){
             }
             //var jsonOObj:List<JSONObject>=List<JSONObject>(result);
             //text2.setText(jsonOObj.length());
-        }
+        }*/
     }
 }

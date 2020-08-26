@@ -18,8 +18,11 @@ import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
 import com.here.android.mpa.routing.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.fab
-import kotlinx.android.synthetic.main.activity_main.registryNumberEditText
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.SetSerializer
+import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.PrintWriter
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -27,6 +30,9 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
     companion object {
         var DESTINATION: MapMarker? = null
+        var posManager: PositioningManager? = null
+        var plates: String? = null
+        var length: Long? = null
     }
     private var backPressed: Long = 0
     private var destinationSelected: Boolean = false
@@ -39,9 +45,9 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
     private var currRoute: MapRoute? = null
     private var map: Map? = null
     private var mapFragment: AndroidXMapFragment? = null
-    private lateinit var posManager: PositioningManager
+    //lateinit var posManager: PositioningManager
     private lateinit var router: CoreRouter
-    private var parkingListener: PositioningManager.OnPositionChangedListener? = null
+    //private var parkingListener: PositioningManager.OnPositionChangedListener? = null
     private lateinit var notificationManager: NotificationManagerCompat
 
 
@@ -63,27 +69,27 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                 .setOnCheckedChangeListener{ _: RadioGroup, i: Int ->
                     when(i){
                         R.id.extend1 -> {
-                            SelectParkingActivity.length = 5*60*1000
+                            length = 5*60*1000
                             periodTextView.text = "Period: 5min"
                         }
 
                         R.id.extend2 -> {
-                            SelectParkingActivity.length = 10*60*1000
+                            length = 10*60*1000
                             periodTextView.text = "Period: 10min"
                         }
 
                         R.id.extend3 -> {
-                            SelectParkingActivity.length = 15*60*1000
+                            length = 15*60*1000
                             periodTextView.text = "Period: 15min"
                         }
 
                         R.id.extend4 -> {
-                            SelectParkingActivity.length = 20*60*1000
+                            length = 20*60*1000
                             periodTextView.text = "Period: 20min"
                         }
 
                         R.id.extend5 -> {
-                            SelectParkingActivity.length = 30*60*1000
+                            length = 30*60*1000
                             periodTextView.text = "Period: 30min"
                         }
                     }
@@ -99,7 +105,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                 fab.isClickable = periodSelected && platesSelected && destinationSelected
 
                 if(platesSelected)
-                    SelectParkingActivity.plates = it.toString()
+                    plates = it.toString()
             }
 
             builder.setView(dialogLayout)
@@ -126,7 +132,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
                 when {
                     DESTINATION == null -> Toast.makeText(this, "Niste izabrali parking", Toast.LENGTH_LONG).show()
-                    currPos == null -> Toast.makeText(this, "Molimo sačekajte", Toast.LENGTH_LONG).show()
+                    currPos == null -> Toast.makeText(this, "Molimo sačekajte...", Toast.LENGTH_LONG).show()
                     else -> showRoute()
                 }
             }
@@ -206,7 +212,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                     map!!.removeMapObject(currRoute!!)
 
                 if (DESTINATION != null){
-                    PSpotSupplier.parkingSports
+                    PSpotSupplier.parkingSpots
                         .filter { spot -> spot.getMarker() == DESTINATION }[0]
                         .shrinkMarker()
                     DESTINATION = null
@@ -229,8 +235,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                         if (pastOverlay != null)
                             map!!.removeMapOverlay(pastOverlay!!)
 
-                        val spots =
-                            PSpotSupplier.parkingSports.filter { spot -> spot.getMarker() == viewObject }
+                        val spots = PSpotSupplier.parkingSpots.filter { spot -> spot.getMarker() == viewObject }
                         if (spots.isNotEmpty()) {
                             val spot = spots[0]
 
@@ -255,7 +260,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                             button.setOnClickListener {
                                 val tmpMarker = viewObject
                                 if (DESTINATION != null)
-                                    PSpotSupplier.parkingSports
+                                    PSpotSupplier.parkingSpots
                                         .filter { spot -> spot.getMarker() == DESTINATION }[0]
                                         .shrinkMarker()
 
@@ -263,7 +268,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                                 destinationSelected = true
                                 fab.isClickable = periodSelected && platesSelected && destinationSelected
 
-                                PSpotSupplier.parkingSports
+                                PSpotSupplier.parkingSpots
                                     .filter { spot -> spot.getMarker() == DESTINATION }[0]
                                     .expandMarker()
 
@@ -320,8 +325,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
     private fun initialize() {
 
-        mapFragment =
-            supportFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment?
+        mapFragment = supportFragmentManager.findFragmentById(R.id.mapfragment) as AndroidXMapFragment?
 
         mapFragment?.init {
             if (it == OnEngineInitListener.Error.NONE) {
@@ -350,14 +354,14 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                         }
                     }
 
-                posManager.addListener(
+                posManager!!.addListener(
                     WeakReference(positionListener)
                 )
 
-                posManager.start(PositioningManager.LocationMethod.GPS_NETWORK)
+                posManager!!.start(PositioningManager.LocationMethod.GPS_NETWORK)
 
                 map!!.setCenter(
-                    posManager.position.coordinate,
+                    posManager!!.position.coordinate,
                     Map.Animation.NONE
 
                 )
@@ -368,7 +372,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
                 PSpotSupplier.init(applicationContext)
 
-                map!!.addMapObjects(PSpotSupplier.parkingSports.map { ps -> ps.getMarker() })
+                map!!.addMapObjects(PSpotSupplier.parkingSpots.map { ps -> ps.getMarker() })
                 PSpotSupplier.addMap(map!!)
 
             } else
@@ -380,44 +384,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         }
     }
 
-    /*private fun addNewPosListener() {
-        if (parkingListener == null) {
-            parkingListener =
-                object : PositioningManager.OnPositionChangedListener {
-                    override fun onPositionUpdated(
-                        method: PositioningManager.LocationMethod,
-                        position: GeoPosition?, isMapMatched: Boolean
-                    ) {
-                        Toast.makeText(
-                            applicationContext, "Udaljenost: " + String.format(
-                                Locale.US, "%.6f",
-                                position!!.coordinate.distanceTo(lastPos!!.coordinate)
-                            ), Toast.LENGTH_LONG
-                        ).show()
-
-                        if (position.coordinate.distanceTo(lastPos!!.coordinate) < 30) {
-                            val smsManager: SmsManager = SmsManager.getDefault()
-
-                            smsManager.sendTextMessage(
-                                "+38765185060",
-                                null, "Uspjeh",
-                                null, null
-                            )
-                        }
-                    }
-
-                    override fun onPositionFixChanged(
-                        method: PositioningManager.LocationMethod,
-                        status: PositioningManager.LocationStatus
-                    ) {
-                    }
-                }
-
-            posManager.addListener(
-                WeakReference(parkingListener)
-            )
-        }
-    }*/
+    //+38765185060
 
     private fun initGetPSpotsWorker(){
         val getPSpotsWorker = OneTimeWorkRequestBuilder<GetPSpotsWorker>()
@@ -447,5 +414,37 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
             }
             backPressed = System.currentTimeMillis()
         }
+    }
+
+    override fun onDestroy() {
+
+
+        var file = File(applicationContext.getExternalFilesDir(null)!!.path, "ps.pspots")
+
+        PrintWriter(file.path).close()
+
+        var tmp = Json{
+            isLenient = true
+        }.encodeToString(
+            SetSerializer(PSpot.serializer()),
+            PSpotSupplier.parkingSpots
+        )
+
+        file.writeText(tmp)
+
+        /*file = File(applicationContext.getExternalFilesDir(null)!!.path, "ls.logs")
+
+        PrintWriter(file.path).close()
+
+        tmp = Json{
+            isLenient = true
+        }.encodeToString(
+            ListSerializer(LogData.serializer()),
+            LogDataSupplier.logData
+        )
+
+        file.writeText(tmp)*/
+
+        super.onDestroy()
     }
 }

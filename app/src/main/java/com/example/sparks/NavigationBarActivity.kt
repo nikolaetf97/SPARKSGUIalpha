@@ -6,7 +6,6 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.view.MenuItem
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -139,7 +138,7 @@ abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatAct
      logsDialog.setView(logsLayout)
      logsDialog.setTitle(getString(R.string.logovi))
      logsLayout.recycler_view.layoutManager = LinearLayoutManager(this)
-     logsLayout.recycler_view.adapter = LogDataAdapter(this, Supplier.logData)
+     logsLayout.recycler_view.adapter = LogDataAdapter(this, LogDataSupplier.logData)
      logsDialog.setPositiveButton("Ok") { dialog, _ -> dialog.dismiss() }
      logsDialog.show()
      return false
