@@ -52,7 +52,7 @@
                     android:id="@+id/mapfragment"
                     class="com.here.android.mpa.mapping.AndroidXMapFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="540dp"
+                    android:layout_height="300dp"
                     android:layout_marginStart="4dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="4dp"
@@ -77,8 +77,9 @@
                     android:text="@string/duration_5m"
                     android:textSize="21sp" />
 
-                <EditText
+                <Spinner
                     android:id="@+id/registryNumberEditText"
+                    android:background="@drawable/style_spinner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/periodTextView"

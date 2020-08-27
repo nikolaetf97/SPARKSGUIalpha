@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.PointF
 import android.os.Bundle
 import android.os.Handler
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
@@ -13,6 +14,8 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.here.android.mpa.common.*
 import com.here.android.mpa.mapping.*
 import com.here.android.mpa.mapping.Map
@@ -34,6 +37,8 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         var plates: String? = null
         var length: Long? = null
     }
+    private lateinit var platesList : ArrayList<PlatesData>
+
     private var backPressed: Long = 0
     private var destinationSelected: Boolean = false
     private var platesSelected: Boolean = false
@@ -56,6 +61,56 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         setup(R.layout.activity_main, fab)
 
         val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
+
+        loadData()
+
+
+        var platesName = ArrayList<String>()
+
+        platesList.forEach {
+
+            platesName.add(it.name)
+
+        }
+
+        var arrayAdapter = ArrayAdapter<String>(this,R.layout.style_spinner,platesName)
+
+        var spinner = findViewById<Spinner>(R.id.registryNumberEditText)
+
+        spinner.adapter = arrayAdapter
+
+
+        val index = sharedPref.getInt("INDEX",-1)
+
+        if(index != -1) {
+            spinner.setSelection(index)
+        }
+
+       spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+           override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
+               plates = spinner.selectedItem.toString()
+
+               with(sharedPref?.edit()){
+
+                   this?.putInt("INDEX", spinner.selectedItemPosition)
+                   this?.commit()
+               }
+
+               platesSelected = true
+               fab.isClickable = periodSelected && platesSelected && destinationSelected
+
+
+           }
+
+           override fun onNothingSelected(p0: AdapterView<*>?) {
+
+               platesSelected = false
+           }
+
+
+       }
+
 
 
         notificationManager = NotificationManagerCompat.from(this)
@@ -99,7 +154,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                         fab.isClickable = periodSelected && platesSelected && destinationSelected
                     }
                 }
-
+/*
             registryNumberEditText.doAfterTextChanged {
                 platesSelected = !it.isNullOrBlank()
                 fab.isClickable = periodSelected && platesSelected && destinationSelected
@@ -107,7 +162,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                 if(platesSelected)
                     plates = it.toString()
             }
-
+*/
             builder.setView(dialogLayout)
             builder.setPositiveButton("Ok"){ dialog, _ ->
                 dialog.dismiss()
@@ -447,4 +502,15 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
         super.onDestroy()
     }
+    private fun loadData()
+    {
+        val sharedPreferences = getSharedPreferences("sharedP", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = sharedPreferences.getString("dataList", null)
+
+        val itemType = object : TypeToken<ArrayList<PlatesData>>() {}.type
+
+        platesList = gson.fromJson<ArrayList<PlatesData>>(json, itemType) ?: ArrayList<PlatesData>()
+    }
+
 }
