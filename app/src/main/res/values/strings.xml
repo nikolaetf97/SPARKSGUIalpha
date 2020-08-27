@@ -95,5 +95,12 @@
     <string name="delete">Izbriši</string>
     <string name="plates">Tablice</string>
     <string name="exit_msg">Pritisnite još jednom da bi ste zatvorili aplikaciju!</string>
+    <string name="no_parking">Niste izabrali parking</string>
+    <string name="wait">Molimo sačekajte...</string>
+    <string name="position">"Trenutna pozicija: "</string>
+    <string name="service_stop">Servis zaustavljen</string>
+    <string name="service_start">Servis pokrenuo korisnik.</string>
+    <string name="service_create">Server check service kreiran!</string>
+    <string name="no_initialize">Neuspješna inicijalizacija Map Fragmenta</string>
 
 </resources>

@@ -65,7 +65,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         loadData()
 
 
-        var platesName = ArrayList<String>()
+        val platesName = ArrayList<String>()
 
         platesList.forEach {
 
@@ -73,9 +73,9 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
         }
 
-        var arrayAdapter = ArrayAdapter<String>(this,R.layout.style_spinner,platesName)
+        val arrayAdapter = ArrayAdapter<String>(this,R.layout.style_spinner,platesName)
 
-        var spinner = findViewById<Spinner>(R.id.registryNumberEditText)
+        val spinner = findViewById<Spinner>(R.id.registryNumberEditText)
 
         spinner.adapter = arrayAdapter
 
@@ -186,8 +186,8 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                 swipeContainer.isRefreshing = false
 
                 when {
-                    DESTINATION == null -> Toast.makeText(this, "Niste izabrali parking", Toast.LENGTH_LONG).show()
-                    currPos == null -> Toast.makeText(this, "Molimo sačekajte...", Toast.LENGTH_LONG).show()
+                    DESTINATION == null -> Toast.makeText(this, getString(R.string.no_parking), Toast.LENGTH_LONG).show()
+                    currPos == null -> Toast.makeText(this, getString(R.string.wait), Toast.LENGTH_LONG).show()
                     else -> showRoute()
                 }
             }
@@ -432,7 +432,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
             } else
                 Toast.makeText(
-                    applicationContext, "Cannot Initialize Map Fragment" + it.details,
+                    applicationContext, getString(R.string.no_initialize) + it.details,
                     Toast.LENGTH_LONG
                 ).show()
 
@@ -474,11 +474,11 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
     override fun onDestroy() {
 
 
-        var file = File(applicationContext.getExternalFilesDir(null)!!.path, "ps.pspots")
+        val file = File(applicationContext.getExternalFilesDir(null)!!.path, "ps.pspots")
 
         PrintWriter(file.path).close()
 
-        var tmp = Json{
+        val tmp = Json{
             isLenient = true
         }.encodeToString(
             SetSerializer(PSpot.serializer()),

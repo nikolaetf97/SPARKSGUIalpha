@@ -72,4 +72,11 @@
     <string name="delete">DELETE</string>
     <string name="plates">License plates</string>
     <string name="exit_msg">Press again to exit!</string>
+    <string name="position">"Current pos: "</string>
+    <string name="service_start">Service started by user.</string>
+    <string name="service_stop">Service stopped</string>
+    <string name="service_create">Server check service created!</string>
+    <string name="no_initialize">Cannot Initialize Map Fragment</string>
+    <string name="wait">Please wait...</string>
+    <string name="no_parking">Parking not selected</string>
 </resources>

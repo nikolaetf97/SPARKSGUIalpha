@@ -3,6 +3,7 @@ package com.example.sparks
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -44,7 +45,7 @@ class CheckArrivalWorker(
     override fun doWork(): Result {
 
         Handler(Looper.getMainLooper()).post {
-            Toast.makeText(applicationContext, "Current pos: " + MainActivity.posManager!!.position.coordinate, Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, Resources.getSystem().getString(R.string.position) + MainActivity.posManager!!.position.coordinate, Toast.LENGTH_LONG).show()
         }
 
 

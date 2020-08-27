@@ -29,7 +29,7 @@ class GetPSpotsBackgroundService : Service() {
     }
 
     override fun onCreate() {
-        Toast.makeText(this, "Server check service created!", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.service_create), Toast.LENGTH_LONG).show()
         val parkingService = GetPSpotsTask
         handler = Handler()
         runnable = Runnable {
@@ -43,11 +43,11 @@ class GetPSpotsBackgroundService : Service() {
     override fun onDestroy() {
         /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
         handler!!.removeCallbacks(runnable!!)
-        Toast.makeText(this, "Service stopped", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.service_stop), Toast.LENGTH_LONG).show()
     }
 
     override fun onStart(intent: Intent, startid: Int) {
-        Toast.makeText(this, "Service started by user.", Toast.LENGTH_LONG).show()
+        Toast.makeText(this, getString(R.string.service_start), Toast.LENGTH_LONG).show()
     }
 
     companion object {
