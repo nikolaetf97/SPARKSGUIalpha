@@ -13,6 +13,8 @@ class App : Application() {
     companion object{
         val channelID: String  = "channel1"
         var notificationManager: NotificationManager? = null
+        val LOCATION_SERVICE = 111
+        val LOCATION_SERVICE_REQUEST = 111111
     }
 
     override fun onCreate(){

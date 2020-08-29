@@ -9,10 +9,6 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromJsonElement
 import java.io.File
 
-/*
-    * TODO("PSpot i LogData imaju identicne funkcije za init i za cuvanje, pa bi se moglo napraviti da zajednicku nadklasu, napraviti da je parametrizovana")
-    * */
-
 @Serializable
 data class LogData(var date:String, var cost:String, var loc:String)
 
@@ -22,7 +18,7 @@ object LogDataSupplier{
         , LogData("datum", "cijena", "lokacija"), LogData("datum", "cijena", "lokacija"), LogData("datum", "cijena", "lokacija")
         , LogData("datum", "cijena", "lokacija"))
 
-    /*fun init(applicationContext: Context) {
+    fun init(applicationContext: Context) {
         val lsFile = File(applicationContext.getExternalFilesDir(null)!!.path, "ls.logs")
 
         if (!lsFile.exists())
@@ -54,5 +50,5 @@ object LogDataSupplier{
 
         lsFile.writeText(tmp)
 
-    }*/
+    }
 }

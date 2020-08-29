@@ -1,8 +1,10 @@
 package com.example.sparks
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.PointF
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.View
@@ -36,6 +38,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         var posManager: PositioningManager? = null
         var plates: String? = null
         var length: Long? = null
+        lateinit var context: Context
     }
     private lateinit var platesList : ArrayList<PlatesData>
 
@@ -64,6 +67,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
         loadData()
 
+        context = applicationContext
 
         val platesName = ArrayList<String>()
 
@@ -171,10 +175,15 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         }
 
         fab.setOnClickListener {
-            WorkManager
+            /*WorkManager
                 .getInstance(applicationContext)
                 .enqueueUniqueWork(CheckArrivalWorker.TAG, ExistingWorkPolicy.KEEP,
-                    OneTimeWorkRequestBuilder<CheckArrivalWorker>().build())
+                    OneTimeWorkRequestBuilder<CheckArrivalWorker>().build())*/
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(Intent(this, LocationUpdateService::class.java))
+            } else{
+                startService(Intent(this, LocationUpdateService::class.java))
+            }
         }
 
         fab.backgroundTintList = ColorStateList.valueOf(

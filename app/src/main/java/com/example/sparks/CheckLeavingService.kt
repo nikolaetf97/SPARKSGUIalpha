@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.widget.RemoteViews
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.example.sparks.ExtendBroadcastReceiver.Companion.DEFAULT_EXTEND
 
@@ -19,6 +20,8 @@ class CheckLeavingService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+        Toast.makeText(applicationContext, "Check leaving", Toast.LENGTH_LONG).show()
 
         val extendIntent = Intent(this, ExtendBroadcastReceiver::class.java)
         val goBackToMainIntent = PendingIntent.getActivity(this, 0,
