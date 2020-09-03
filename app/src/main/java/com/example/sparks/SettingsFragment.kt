@@ -25,33 +25,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 showDialog(getString(R.string.how_to_use), getString(R.string.how_to_use_value))
                 true
             }
-
-            val report:Preference?=findPreference("signature")
-            report?.setOnPreferenceClickListener {
-                val builder = AlertDialog.Builder(this.requireContext())
-                val inflater = layoutInflater
-
-                builder.setTitle(getString(R.string.error_info_value))
-
-                val dialogLayout = inflater.inflate(R.layout.error_dialog, null)
-                val editText  = dialogLayout.findViewById<EditText>(R.id.editText)
-
-                builder.setView(dialogLayout)
-                builder.setPositiveButton("OK"){ dialog, _ ->
-                    val emailIntent = Intent(Intent.ACTION_SEND)
-                    emailIntent.type = "text/plain"
-                    emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("spark-feedback@outlook.com"))
-                    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback")
-                    emailIntent.putExtra(Intent.EXTRA_TEXT, editText.text)
-                    emailIntent.type = "message/rfc822"
-                    startActivity(Intent.createChooser(emailIntent, "Send email using..."))
-                    dialog.dismiss()
-                }
-                builder.show()
-
-                true
-            }
-
+            
             val oAplikaciji:Preference?=findPreference("o aplikaciji")
             oAplikaciji?.setOnPreferenceClickListener {
                 showDialog(getString(R.string.about_app), getString(R.string.about_app_value))
