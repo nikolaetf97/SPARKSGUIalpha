@@ -20,7 +20,7 @@
             android:contentDescription="TODO" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_ocupation"
+            android:id="@+id/tv_len"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -29,19 +29,19 @@
             android:textSize="12sp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_name"
+            android:id="@+id/tv_loc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_ocupation"
+            android:layout_below="@+id/tv_len"
             android:layout_toRightOf="@+id/icon_parking"
             android:text="@string/parking_name"
             android:textSize="12sp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_zone"
+            android:id="@+id/tv_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_name"
+            android:layout_below="@+id/tv_loc"
             android:layout_toRightOf="@+id/icon_parking"
             android:text="@string/zone_title"
             android:textSize="12sp" />
@@ -50,7 +50,7 @@
             android:id="@+id/tv_select"
             android:layout_width="45dp"
             android:layout_height="36dp"
-            android:layout_below="@+id/tv_zone"
+            android:layout_below="@+id/tv_cost"
             android:layout_marginLeft="136dp"
             android:layout_marginTop="4dp"
             android:foreground="@drawable/ic_check_black_12dp"

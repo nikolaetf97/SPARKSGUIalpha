@@ -1,35 +1,40 @@
 <resources>
 
+    <style name="ParentStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:alertDialogTheme">@style/Theme.AppCompat.Light.Dialog.Alert</item>
+        <item name="alertDialogTheme">@style/Theme.AppCompat.Light.Dialog.Alert</item>
+    </style>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="ParentStyle" >
         <!-- Customize your theme here. -->
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="RedTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="RedTheme" parent="ParentStyle">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#e03112</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">#e03112</item>
     </style>
 
-    <style name="GreenTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="GreenTheme" parent="ParentStyle">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#4CAF50</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">#4CAF50</item>
     </style>
 
-    <style name="PinkTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="PinkTheme" parent="ParentStyle">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#E91E63</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">#E91E63</item>
     </style>
 
-    <style name="YellowTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="YellowTheme" parent="ParentStyle">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">#FFEB3B</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -40,6 +45,11 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="WrapContentDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="windowMinWidthMajor">0%</item>
+        <item name="windowMinWidthMinor">0%</item>
     </style>
 
 </resources>

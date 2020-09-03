@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/AppTheme"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/d_info_tv_loc"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:gravity="bottom"
+        android:text="@string/parking_name"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/d_info_tv_reg_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/d_info_tv_loc"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/plates"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/d_info_tv_period"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/d_info_tv_reg_num"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/info_tv_period"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/d_info_tv_arrival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/d_info_tv_period"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/tv_date"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/d_info_tv_zone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/d_info_tv_arrival"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/zone_title"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/d_info_tv_cost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/d_info_tv_zone"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/cost"
+        android:textSize="24sp" />
+
+</RelativeLayout>

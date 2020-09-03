@@ -4,28 +4,25 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.os.Build
-import android.widget.Toast
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
-import java.io.File
 
 class App : Application() {
     companion object{
         val channelID: String  = "channel1"
         var notificationManager: NotificationManager? = null
-        val LOCATION_SERVICE = 111
-        val LOCATION_SERVICE_REQUEST = 111111
+        val LOCATION_SERVICE = 222
+        val LOCATION_SERVICE_REQUEST = 222222
     }
 
     override fun onCreate(){
         super.onCreate()
         createNotificationChannel()
+        LogDataSupplier.init(applicationContext)
     }
 
     private fun createNotificationChannel(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
             val channel1 = NotificationChannel(
-                channelID, "TICKET_SERVICE",
+                channelID, "APP_NOTIFICATION_CHANNEL",
                 NotificationManager.IMPORTANCE_HIGH
             )
 

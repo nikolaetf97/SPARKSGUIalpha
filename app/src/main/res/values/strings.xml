@@ -7,7 +7,6 @@
     <string name="navigation_bar_close">Close navigation bar</string>
     <string name="app_name">SPARKS</string>
     <string name="settings">Podešavanja</string>
-    <string name="title_activity_settings">Settings</string>
     <string name="choose_language">Srpski</string>
     <!-- Preference Titles -->
 
@@ -20,34 +19,27 @@
     <string name="how_to_use">Uputstvo za upotrebu</string>
 
     <string name="language_title">Jezik</string>
-    <string name="warning_title">Prijavite problem</string>
     <!-- Sync Preferences -->
     <string name="home_string">Početni ekran</string>
-    <string name="profile_string">Podešavanja profila</string>
     <string name="settings_string">Podešavanja</string>
-    <string name="manual_string">Uputstvo za upotrebu</string>
     <string name="report_string">Prijavite grešku</string>
-    <string name="about_string">O aplikaciji</string>
     <string name="sparks">SPARKS</string>
     <string name="misc">Ostalo</string>
     <string name="error_info">Unesite opis greške</string>
     <string name="color_title">Izaberite glavnu boju aplikacije</string>
     <string name="logovi">Logovi</string>
-    <string name="_15min">15min</string>
-    <string name="_10min">10min</string>
-    <string name="_5min">5min</string>
-    <string name="_20min">20min</string>
-    <string name="_30min">30min</string>
+    <string name="_5min">1min</string>
+    <string name="_10min">2min</string>
+    <string name="_15min">3min</string>
+    <string name="_20min">4min</string>
+    <string name="_30min">5min</string>
     <string name="price">Cijena</string>
-    <string name="parking_name">Ime parkinga</string>
+    <string name="parking_name">"Ime parkinga: "</string>
     <string name="parking_time">Period zauzeća</string>
     <string name="parking_load">Trenutno zauzeće</string>
-    <string name="duration_5m">Period: 5m</string>
-    <string name="duration_1h">Period: 1h</string>
-    <string name="book_parking">Rezervišite parking</string>
+    <string name="duration_5m">Period: Izaberite period</string>
     <string name="parking_duration">Izaberite period rezervacije</string>
     <string name="remaining_time">Preostalo vrijeme na parkingu</string>
-    <string name="reduction_time">Izaberite period skraćenja</string>
     <string name="information">Informacije</string>
     <string name="blue">Plava</string>
     <string name="red">Crvena</string>
@@ -55,17 +47,9 @@
     <string name="pink">Roza</string>
     <string name="yellow">Žuta</string>
 
-    <string name="info">Upravljanje informacijama</string>
+    <string name="info">Upoznavanje sa aplikacijom</string>
     <string name="gen_info">Opšte upravljanje</string>
-    <string name="all">Sve</string>
 
-    <string name="default_parking">Podrazumijevani parking</string>
-    <string name="default_duration">Podrazumijevani period zauzeća</string>
-    <string name="default_plates">Podrazumijevani broj registarskih tablica</string>
-
-    <string name="zone0">Zona 0</string>
-    <string name="zone1">Zona 1</string>
-    <string name="zone2">Zona 2</string>
     <string name="about_app_value">Aplikacija SPARK je rezultat urađenog projekta iz predmeta Projektovanje Softvera, omogućava korisniku da lakše pronađe slobodno parking mjesto kao i da mu prikaže mnoštvo korisnih informacija o parkinzima u Banja Luci \n \n
         Verzija:1.0</string>
     <string name="how_to_use_value">1.Kao korisnik ove aplikacije potrebno je prvo da odaberete destinaciju, kako bi vam aplikacija mogla prikazati informacije o parking mjestima u krugu od 500 metara \n
@@ -97,10 +81,12 @@
     <string name="exit_msg">Pritisnite još jednom da bi ste zatvorili aplikaciju!</string>
     <string name="no_parking">Niste izabrali parking</string>
     <string name="wait">Molimo sačekajte...</string>
-    <string name="position">"Trenutna pozicija: "</string>
     <string name="service_stop">Servis zaustavljen</string>
     <string name="service_start">Servis pokrenuo korisnik.</string>
     <string name="service_create">Server check service kreiran!</string>
     <string name="no_initialize">Neuspješna inicijalizacija Map Fragmenta</string>
-
+    <string name="tv_date">"Datum: "</string>
+    <string name="arrival_time">"Vrijeme dolaska: "</string>
+    <string name="cost">"Cijena: "</string>
+    <string name="info_tv_period">"Period: "</string>
 </resources>

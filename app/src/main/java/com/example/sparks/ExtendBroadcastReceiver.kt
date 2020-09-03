@@ -3,20 +3,12 @@ package com.example.sparks
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-
-/*
-*
-* Na pritisak na dugme u notifikicaji
-* se produzi parking ako moze
-*
-* */
-
-class ExtendBroadcastReceiver() : BroadcastReceiver(){
+class ExtendBroadcastReceiver : BroadcastReceiver(){
     override fun onReceive(context: Context?, intent: Intent?) {
-        ParkingCountdownTimer.setTime(DEFAULT_EXTEND)  //quick extend for 5minutes
+        ParkingCountdownTimer.setTime(DEFAULT_EXTEND)  //quick extend for 1 minute
+        SPARKService.cost++
     }
-
     companion object{
-        val DEFAULT_EXTEND = 3000000L
+        const val DEFAULT_EXTEND: Long = 60000
     }
 }

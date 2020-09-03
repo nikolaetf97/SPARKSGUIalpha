@@ -2,64 +2,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
     <group android:checkableBehavior="single">
-
         <item android:title="@string/glavne_aktivnosti">
-
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/home_string" />
-
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_person_black_24dp"
-            android:title="@string/profile_string" />
-
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="@string/settings_string" />
-
         <item
             android:id="@+id/nav_plates"
             android:icon="@drawable/licence_plates"
             android:title="@string/plates" />
-
-        <item
-            android:id="@+id/nav_info"
-            android:icon="@drawable/ic_baseline_directions_car_24"
-            android:title="@strings/info" />
-
         <item
             android:id="@+id/nav_logs"
             android:icon="@drawable/ic_history_black_24dp"
             android:title="@string/logovi" />
-
         </item>
-
     </group>
-
     <item android:title="@string/misc">
-
         <menu>
-
-        <item
-            android:id="@+id/user_manual"
-            android:icon="@drawable/ic_local_library_black_24dp"
-            android:title="@string/manual_string" />
-
         <item
             android:id="@+id/report_error"
             android:icon="@drawable/ic_report_black_24dp"
             android:title="@string/report_string" />
-
-        <item
-            android:id="@+id/about"
-            android:icon="@drawable/ic_info_outline_black_24dp"
-            android:title="@string/about_string" />
         </menu>
     </item>
-
 </menu>

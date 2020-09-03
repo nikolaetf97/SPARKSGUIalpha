@@ -6,13 +6,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class PlatesAdapter(private val data: ArrayList<PlatesData>, val clickListener: (PlatesData) -> Unit) : RecyclerView.Adapter<PlatesAdapter.ViewHolder>(){
+class PlatesAdapter(private val data: ArrayList<PlatesData>,
+                    private val clickListener: (PlatesData) -> Unit)
+    : RecyclerView.Adapter<PlatesAdapter.ViewHolder>(){
 
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView) {
-        val nameTextView = itemView.findViewById<TextView>(R.id.content)
-        val descriptionTextView = itemView.findViewById<TextView>(R.id.itemDescription)
+        val nameTextView = itemView.findViewById<TextView>(R.id.content)!!
+        val descriptionTextView = itemView.findViewById<TextView>(R.id.itemDescription)!!
 
-        //
         fun bind(pdata : PlatesData, clickListener: (PlatesData) -> Unit)
         {
             itemView.setOnClickListener {

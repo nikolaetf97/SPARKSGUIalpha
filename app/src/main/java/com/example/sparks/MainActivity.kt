@@ -12,8 +12,6 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
-import androidx.core.widget.doAfterTextChanged
-import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.gson.Gson
@@ -53,9 +51,8 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
     private var currRoute: MapRoute? = null
     private var map: Map? = null
     private var mapFragment: AndroidXMapFragment? = null
-    //lateinit var posManager: PositioningManager
+
     private lateinit var router: CoreRouter
-    //private var parkingListener: PositioningManager.OnPositionChangedListener? = null
     private lateinit var notificationManager: NotificationManagerCompat
 
 
@@ -70,52 +67,29 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         context = applicationContext
 
         val platesName = ArrayList<String>()
-
-        platesList.forEach {
-
-            platesName.add(it.name)
-
-        }
+        platesList.forEach { platesName.add(it.name) }
 
         val arrayAdapter = ArrayAdapter<String>(this,R.layout.style_spinner,platesName)
-
         val spinner = findViewById<Spinner>(R.id.registryNumberEditText)
-
         spinner.adapter = arrayAdapter
 
-
         val index = sharedPref.getInt("INDEX",-1)
-
         if(index != -1) {
             spinner.setSelection(index)
         }
-
        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-
                plates = spinner.selectedItem.toString()
-
                with(sharedPref?.edit()){
-
                    this?.putInt("INDEX", spinner.selectedItemPosition)
                    this?.commit()
                }
-
                platesSelected = true
                fab.isClickable = periodSelected && platesSelected && destinationSelected
-
-
            }
 
-           override fun onNothingSelected(p0: AdapterView<*>?) {
-
-               platesSelected = false
-           }
-
-
+           override fun onNothingSelected(p0: AdapterView<*>?) { platesSelected = false }
        }
-
-
 
         notificationManager = NotificationManagerCompat.from(this)
         periodTextView.setOnClickListener{
@@ -128,28 +102,28 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                 .setOnCheckedChangeListener{ _: RadioGroup, i: Int ->
                     when(i){
                         R.id.extend1 -> {
-                            length = 5*60*1000
-                            periodTextView.text = "Period: 5min"
+                            length = 60000
+                            periodTextView.text = "Period: 1min"
                         }
 
                         R.id.extend2 -> {
-                            length = 10*60*1000
-                            periodTextView.text = "Period: 10min"
+                            length = 120000
+                            periodTextView.text = "Period: 2min"
                         }
 
                         R.id.extend3 -> {
-                            length = 15*60*1000
-                            periodTextView.text = "Period: 15min"
+                            length = 180000
+                            periodTextView.text = "Period: 3min"
                         }
 
                         R.id.extend4 -> {
-                            length = 20*60*1000
-                            periodTextView.text = "Period: 20min"
+                            length = 240000
+                            periodTextView.text = "Period: 4min"
                         }
 
                         R.id.extend5 -> {
-                            length = 30*60*1000
-                            periodTextView.text = "Period: 30min"
+                            length = 300000
+                            periodTextView.text = "Period: 5min"
                         }
                     }
 
@@ -158,15 +132,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                         fab.isClickable = periodSelected && platesSelected && destinationSelected
                     }
                 }
-/*
-            registryNumberEditText.doAfterTextChanged {
-                platesSelected = !it.isNullOrBlank()
-                fab.isClickable = periodSelected && platesSelected && destinationSelected
 
-                if(platesSelected)
-                    plates = it.toString()
-            }
-*/
             builder.setView(dialogLayout)
             builder.setPositiveButton("Ok"){ dialog, _ ->
                 dialog.dismiss()
@@ -175,14 +141,10 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         }
 
         fab.setOnClickListener {
-            /*WorkManager
-                .getInstance(applicationContext)
-                .enqueueUniqueWork(CheckArrivalWorker.TAG, ExistingWorkPolicy.KEEP,
-                    OneTimeWorkRequestBuilder<CheckArrivalWorker>().build())*/
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(Intent(this, LocationUpdateService::class.java))
+                startForegroundService(Intent(this, SPARKService::class.java))
             } else{
-                startService(Intent(this, LocationUpdateService::class.java))
+                startService(Intent(this, SPARKService::class.java))
             }
         }
 
@@ -199,8 +161,8 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                     currPos == null -> Toast.makeText(this, getString(R.string.wait), Toast.LENGTH_LONG).show()
                     else -> showRoute()
                 }
-            }
-                ,((Random().nextInt(4) + 1) * 1000).toLong()) }
+            },
+                ((Random().nextInt(4) + 1) * 1000).toLong()) }
 
         swipeContainer.setColorSchemeResources(
             android.R.color.holo_blue_bright,
@@ -308,15 +270,15 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
                             val icon = view.findViewById<ImageView>(R.id.icon_parking)
                             icon.setImageResource(viewObject.description!!.toInt())
 
-                            val ocupation = view.findViewById<TextView>(R.id.tv_ocupation)
+                            val ocupation = view.findViewById<TextView>(R.id.tv_len)
                             val placeholder =
                                 spot.freeSpace.toString() + "/" + spot.space.toString()
                             ocupation.text = placeholder
 
-                            val name = view.findViewById<TextView>(R.id.tv_name)
+                            val name = view.findViewById<TextView>(R.id.tv_loc)
                             name.text = spot.name
 
-                            val zone = view.findViewById<TextView>(R.id.tv_zone)
+                            val zone = view.findViewById<TextView>(R.id.tv_cost)
                             zone.text = "1"
 
                             val button = view.findViewById<Button>(R.id.tv_select)
@@ -373,7 +335,6 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
             val routePlan = RoutePlan()
 
             routePlan.addWaypoint(RouteWaypoint(currPos!!))
-
             routePlan.addWaypoint(RouteWaypoint(coordinate))
 
             val routeOptions = RouteOptions()
@@ -448,7 +409,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         }
     }
 
-    //+38765185060
+    //TODO("Dodati da se posalje poruka na +38765185060 kada se dodje na parking ili kada se produzi parking, u zavisnosti od tipa parkinga, i dana")
 
     private fun initGetPSpotsWorker(){
         val getPSpotsWorker = OneTimeWorkRequestBuilder<GetPSpotsWorker>()
@@ -481,13 +442,10 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
     }
 
     override fun onDestroy() {
-
-
-        val file = File(applicationContext.getExternalFilesDir(null)!!.path, "ps.pspots")
-
+        var file = File(applicationContext.getExternalFilesDir(null)!!.path, "ps.pspots")
         PrintWriter(file.path).close()
 
-        val tmp = Json{
+        var tmp = Json{
             isLenient = true
         }.encodeToString(
             SetSerializer(PSpot.serializer()),
@@ -495,9 +453,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
         )
 
         file.writeText(tmp)
-
-        /*file = File(applicationContext.getExternalFilesDir(null)!!.path, "ls.logs")
-
+        file = File(applicationContext.getExternalFilesDir(null)!!.path, "ls.logs")
         PrintWriter(file.path).close()
 
         tmp = Json{
@@ -507,8 +463,7 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
             LogDataSupplier.logData
         )
 
-        file.writeText(tmp)*/
-
+        file.writeText(tmp)
         super.onDestroy()
     }
     private fun loadData()
@@ -521,5 +476,4 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
         platesList = gson.fromJson<ArrayList<PlatesData>>(json, itemType) ?: ArrayList<PlatesData>()
     }
-
 }

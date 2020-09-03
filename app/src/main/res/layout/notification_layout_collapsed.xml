@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="64dp"
+    android:background="#FFFFFF"
+    android:backgroundTint="#FFFFFF"
+    android:orientation="vertical"
     android:padding="8dp">
+
     <TextView
         android:id="@+id/chrono"
+        style="TextAppearance.Material.Notification.Time"
         android:layout_width="128dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="12dp"
         android:height="56dp"
         android:text="sample text"
-        android:layout_height="match_parent"
-        android:layout_marginRight="12dp"
-        android:layout_marginLeft="32dp"
-        style="TextAppearance.Material.Notification.Time"
         android:textSize="24sp" />
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.sparks
 
 import android.content.Context
+import android.os.Handler
 import android.widget.Toast
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.Image
@@ -118,9 +119,11 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
 
 object PSpotSupplier{
 
-    private val maps = mutableListOf<Map>()
+    private var map: Map? = null
 
-    fun addMap(map: Map) = maps.add(map)
+    fun addMap(toAdd: Map){
+        this.map = toAdd
+    }
 
     var  parkingSpots: MutableSet<PSpot> = mutableSetOf()
 
@@ -131,8 +134,7 @@ object PSpotSupplier{
 
     fun addPSpot(spot: PSpot){
         parkingSpots.add(spot)
-        for(map in maps)
-            map.addMapObject(spot.getMarker())
+        map!!.addMapObject(spot.getMarker())
     }
 
     fun showNearbyMarkers(
@@ -151,15 +153,10 @@ object PSpotSupplier{
         }
 
         spots[0].expandMarker()
-
         MainActivity.DESTINATION = spots[0].getMarker()
-
-
 
         return spots
     }
-
-
 
     fun init(applicationContext: Context) {
         val psFile = File(applicationContext.getExternalFilesDir(null)!!.path, "ps.pspots")
@@ -183,14 +180,25 @@ object PSpotSupplier{
             PSpot(44.838102, 17.220876, 12, 120, "Centrum"),
             PSpot(44.817937, 17.216730, 100, 120, "Hiper Kort"),
             PSpot(44.816687, 17.211028, 50, 300, "FIS"),
-            PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"))
+            PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"),
+            PSpot(44.819054, 17.210573, 8, 12, "Test"))
 
-        val tmp = Json{
-         isLenient = true
-        }.encodeToString(SetSerializer(PSpot.serializer()),
+        val tmp = Json{}
+            .encodeToString(SetSerializer(PSpot.serializer()),
             parkingSpots)
 
         psFile.writeText(tmp)
+
+    }
+
+    fun setFreeSpaces(t:PSpot){
+        val ps = parkingSpots.find { spot -> spot == t }
+        ps!!.freeSpace = t.freeSpace
+        Handler().postDelayed({
+            map!!.removeMapObject(ps!!.getMarker())
+            map!!.addMapObject(ps!!.getMarker())
+        },
+            1000)
 
     }
 }

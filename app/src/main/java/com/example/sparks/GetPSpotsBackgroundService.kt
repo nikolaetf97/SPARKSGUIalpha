@@ -14,14 +14,6 @@ import com.squareup.okhttp.Response
 import org.json.JSONArray
 import org.json.JSONObject
 
-/*
-*
-* TODO("Ovaj servis treba da pokrenes i podesis tako da periodicno dohvati sa servera")
-* Koristi GetPSpotsTask da komunicira sa serverom periodicno
-*
-*
-* */
-
 class GetPSpotsBackgroundService : Service() {
     private var handler: Handler? = null
     override fun onBind(intent: Intent): IBinder? {
@@ -33,7 +25,6 @@ class GetPSpotsBackgroundService : Service() {
         val parkingService = GetPSpotsTask
         handler = Handler()
         runnable = Runnable {
-            //Toast.makeText(context, "Servicse is still running", Toast.LENGTH_LONG).show()
             parkingService.execute()
             handler!!.postDelayed(runnable!!, 10000)
         }
@@ -41,7 +32,6 @@ class GetPSpotsBackgroundService : Service() {
     }
 
     override fun onDestroy() {
-        /* IF YOU WANT THIS SERVICE KILLED WITH THE APP THEN UNCOMMENT THE FOLLOWING LINE */
         handler!!.removeCallbacks(runnable!!)
         Toast.makeText(this, getString(R.string.service_stop), Toast.LENGTH_LONG).show()
     }
@@ -54,14 +44,6 @@ class GetPSpotsBackgroundService : Service() {
         var runnable: Runnable? = null
     }
 }
-
-/*
-* TODO("Probao sam da napravim da je jedan Worker za dohvatanje rezultata, a drugi
-*  za obradu, te da svakih 5 sekundi prvi pokrene, zavrsi i posalje odgovor drugom.
-   Zbog ogranicenja Data klase koja se koristi za prenos podataka izmedju workera
-   ograniciti poslani JSON na 10240B ili oko 30 parkinga u trenutnoj implementaciji")
-*
-* */
 
 class GetPSpotsWorker(context: Context,
                 workerParams: WorkerParameters)
@@ -100,7 +82,6 @@ class GetPSpotsWorker(context: Context,
     companion object{
         const val GET_PSPOT_TAG = "getPSpotsTag"
     }
-
 }
 
 class ProcessPSpotsWorker(context: Context,
@@ -135,17 +116,14 @@ class ProcessPSpotsWorker(context: Context,
                         destination.get("longitude").toString().toDouble(),
                         destination.get("free_spaces").toString().toInt(),
                         destination.get("spaces").toString().toInt(),
-                        destination.get("name").toString()
-                    )
+                        destination.get("name").toString())
 
                     if (PSpotSupplier.parkingSpots.contains(tmp)) {
-                        PSpotSupplier.parkingSpots.find { spot -> spot == tmp }!!
-                            .setFreeSpaces(tmp.freeSpace)
+                        PSpotSupplier.setFreeSpaces(tmp)
                     } else
                         PSpotSupplier.addPSpot(tmp)
                 }
             }
-
             Result
                 .success()
         } catch (e: Exception){
@@ -160,7 +138,6 @@ class ProcessPSpotsWorker(context: Context,
     companion object{
         const val PROCESS_PSPOT_TAG = "processPSpotsTag"
     }
-
 }
 
 object GetPSpotsTask: AsyncTask<Unit, Unit, String>(){
@@ -190,18 +167,6 @@ object GetPSpotsTask: AsyncTask<Unit, Unit, String>(){
         return null
 
     }
-
-
-
-    /*
-    *
-    * TODO("Na zahtjev slati samo one parkinge kod kojih ima promena")
-    * Ovde sam napravio tako da kada dodbije rezultate sa servera
-    * ako ima eventualno novih parkinga da ih doda u listu
-    * a za ostale samo da promeni stanje zauzeca,
-    * nakon cega se azurira stanje mapa
-    *
-    * */
 
     override fun onPostExecute(result: String?) {
 

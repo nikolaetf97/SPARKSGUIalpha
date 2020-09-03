@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:name=".App"
@@ -32,40 +33,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <!--activity android:name=".About" /-->
-
-        <!--activity
-            android:name=".SettingsFragment"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".MainActivity" /-->
-
-        <!--activity
-            android:name=".SelectParkingActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            /-->
-
-        <activity
-            android:name=".ProfileActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-
+        <activity android:name=".InfoDialogActivity"
+            android:theme="@android:style/Theme.Material.Light.Dialog.Alert"/>
         <activity android:name=".SettingsActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity
-            android:name=".InformationActivity"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-
         <activity
             android:name=".PlatesActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
-
         <service
             android:name="com.here.android.mpa.service.MapService"
             android:label="HereMapService">
@@ -74,11 +50,13 @@
                 <action android:name="com.here.android.mpa.service.MapService.v3" />
             </intent-filter>
         </service>
-        <service android:name=".CheckArrivalForegroundService" />
-        <service android:name=".CheckLeavingService" />
         <service android:name=".GetPSpotsBackgroundService" />
-        <service android:name=".LocationUpdateService"
+        <service android:name=".SPARKService"
             android:foregroundServiceType="location"/>
+        <service android:name=".ShowInfoIntentService" />
+
+        <receiver android:name=".ExtendBroadcastReceiver"
+            android:exported="true"/>
 
         <meta-data android:name="com.here.android.maps.appid"
             android:value="N0YzQlqH2bVvmxdLsgqi"/>

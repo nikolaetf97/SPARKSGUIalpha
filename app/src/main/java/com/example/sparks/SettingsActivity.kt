@@ -12,6 +12,5 @@ class SettingsActivity : NavigationBarActivity(R.id.nav_settings) {
             .beginTransaction()
             .replace(R.id.settings, SettingsFragment())
             .commit()
-
     }
 }

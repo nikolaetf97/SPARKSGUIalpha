@@ -3,40 +3,26 @@ package com.example.sparks
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.Gravity
+import android.view.WindowManager
 import android.widget.EditText
-import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import kotlinx.android.synthetic.*
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
-
-
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
             val uputstvoPreference:Preference?=findPreference("uputstvo")
 
             uputstvoPreference?.setOnPreferenceClickListener {
-                val alert=AlertDialog.Builder(this.requireContext())
-                alert.setTitle(getString(R.string.how_to_use))
-                alert.setMessage(getString(R.string.how_to_use_value))
-                alert.setPositiveButton("OK"){dialog, which ->
-                    dialog.dismiss()
-                }
-                alert.show()
-
-
+                showDialog(getString(R.string.how_to_use), getString(R.string.how_to_use_value))
                 true
             }
 
@@ -44,174 +30,106 @@ class SettingsFragment : PreferenceFragmentCompat() {
             report?.setOnPreferenceClickListener {
                 val builder = AlertDialog.Builder(this.requireContext())
                 val inflater = layoutInflater
+
                 builder.setTitle(getString(R.string.error_info_value))
+
                 val dialogLayout = inflater.inflate(R.layout.error_dialog, null)
                 val editText  = dialogLayout.findViewById<EditText>(R.id.editText)
+
                 builder.setView(dialogLayout)
-                builder.setPositiveButton("OK"){dialog, which ->
+                builder.setPositiveButton("OK"){ dialog, _ ->
                     val emailIntent = Intent(Intent.ACTION_SEND)
-                    emailIntent.setType("text/plain")
+                    emailIntent.type = "text/plain"
                     emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("spark-feedback@outlook.com"))
                     emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback")
                     emailIntent.putExtra(Intent.EXTRA_TEXT, editText.text)
-                    emailIntent.setType("message/rfc822")
+                    emailIntent.type = "message/rfc822"
                     startActivity(Intent.createChooser(emailIntent, "Send email using..."))
                     dialog.dismiss()
                 }
                 builder.show()
+
                 true
             }
 
             val oAplikaciji:Preference?=findPreference("o aplikaciji")
             oAplikaciji?.setOnPreferenceClickListener {
-                var alert=AlertDialog.Builder(this.requireContext())
-                alert.setTitle(getString(R.string.about_app))
-                alert.setMessage(getString(R.string.about_app_value))
-                alert.setPositiveButton("OK"){dialog,which->
-                    dialog.dismiss()
-                }
-                alert.show()
+                showDialog(getString(R.string.about_app), getString(R.string.about_app_value))
                 true
             }
 
             val language:Preference?=findPreference("language")
 
-            language?.setOnPreferenceChangeListener { preference, newValue ->
-
+            language?.setOnPreferenceChangeListener { _, newValue ->
                 when(newValue.toString()) {
-                    "English" -> {
-
-                        val locale = Locale("en")
-                        Locale.setDefault(locale)
-                        val config = Configuration()
-                        config.locale = locale
-                        requireActivity().baseContext.resources.updateConfiguration(config,
-                            requireActivity().baseContext.resources.displayMetrics)
-
-                        requireActivity().recreate()
-
-                        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-                        with(sharedPref?.edit()){
-
-                            this?.putString("LANG","en")
-                            this?.commit()
-                        }
-
-                    }
-                    "Srpski" -> {
-
-                        val locale = Locale("sr")
-                        Locale.setDefault(locale)
-                        val config = Configuration()
-                        config.locale = locale
-                        requireActivity().baseContext.resources.updateConfiguration(config,
-                            requireActivity().baseContext.resources.displayMetrics)
-
-                        requireActivity().recreate()
-
-                        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-                        with(sharedPref?.edit()){
-
-                            this?.putString("LANG","sr")
-                            this?.commit()
-                        }
-
-                    }
+                    "English" -> changeLanguage("en", activity)
+                    "Srpski" -> changeLanguage("sr", activity)
                 }
-                true
 
+                true
             }
 
             val color:Preference?=findPreference("color")
 
-            color?.setOnPreferenceChangeListener { preference, newValue ->
+            color?.setOnPreferenceChangeListener { _, newValue ->
                 ResourcesCompat.getColor(this.resources,R.color.colorPrimary,null)
-
                 when(newValue.toString()){
-                    getString(R.string.blue)->{
+                    getString(R.string.blue)-> changeColor(R.style.AppTheme, R.color.colorPrimary, activity)
 
-                       this.requireContext().setTheme(R.style.AppTheme)
-                        requireActivity().recreate()
-                       activity?.findViewById<Toolbar>(R.id.drawer_toolbar)?.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-                        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-                        with(sharedPref?.edit()){
+                    getString(R.string.green)-> changeColor(R.style.GreenTheme, R.color.green, activity)
 
-                            this?.putInt("THEME",R.style.AppTheme)
-                            this?.putInt("BACKGROUND",resources.getColor(R.color.colorPrimary))
-                            this?.commit()
-                        }
-                    }
+                    getString(R.string.red)-> changeColor(R.style.RedTheme, R.color.red, activity)
 
-                    getString(R.string.green)->{
-                        //mijenjaju se dugmad i slova u iskacucim prozorima
-                        this.requireContext().setTheme(R.style.GreenTheme)
-                        //mijenja boju onog gore toolbara gdje pise spark
-                        requireActivity().recreate()
-                        activity?.findViewById<Toolbar>(R.id.drawer_toolbar)?.setBackgroundColor(resources.getColor(R.color.fabBackground))
-                        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-                        with(sharedPref?.edit()){
+                    getString(R.string.yellow)-> changeColor(R.style.YellowTheme, R.color.yellow, activity)
 
-                            this?.putInt("THEME",R.style.GreenTheme)
-                            this?.putInt("BACKGROUND",resources.getColor(R.color.fabBackground))
-                            this?.commit()
-                        }
-                    }
-
-                    getString(R.string.red)->{
-                        //mijenjaju se dugmad i slova u iskacucim prozorima
-                        this.requireContext().setTheme(R.style.RedTheme)
-                        //mijenja boju onog gore toolbara gdje pise spark
-                        requireActivity().recreate()
-                        activity?.findViewById<Toolbar>(R.id.drawer_toolbar)?.setBackgroundColor(resources.getColor(R.color.red))
-
-                        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-                        with(sharedPref?.edit()){
-
-                            this?.putInt("THEME",R.style.RedTheme)
-                            this?.putInt("BACKGROUND",resources.getColor(R.color.red))
-                            this?.commit()
-                        }
-
-                    }
-
-                    getString(R.string.yellow)->{
-                        //mijenjaju se dugmad i slova u iskacucim prozorima
-                        this.requireContext().setTheme(R.style.YellowTheme)
-                        //mijenja boju onog gore toolbara gdje pise spark
-                        requireActivity().recreate()
-                        activity?.findViewById<Toolbar>(R.id.drawer_toolbar)?.setBackgroundColor(resources.getColor(R.color.yellow))
-
-                        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-                        with(sharedPref?.edit()){
-
-                            this?.putInt("THEME",R.style.YellowTheme)
-                            this?.putInt("BACKGROUND",resources.getColor(R.color.yellow))
-                            this?.commit()
-                        }
-
-                    }
-
-                    getString(R.string.pink)->{
-                        //mijenjaju se dugmad i slova u iskacucim prozorima
-                        this.requireContext().setTheme(R.style.PinkTheme)
-                        //mijenja boju onog gore toolbara gdje pise spark
-                        requireActivity().recreate()
-                        activity?.findViewById<Toolbar>(R.id.drawer_toolbar)?.setBackgroundColor(resources.getColor(R.color.pink))
-
-                        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
-                        with(sharedPref?.edit()){
-
-                            this?.putInt("THEME",R.style.PinkTheme)
-                            this?.putInt("BACKGROUND",resources.getColor(R.color.pink))
-                            this?.commit()
-                        }
-
-                    }
+                    getString(R.string.pink)-> changeColor(R.style.PinkTheme, R.color.pink, activity)
 
                 }
-
 
                 true
             }
         }
+
+    private fun showDialog(title: String, message: String) {
+        val alertBuilder=AlertDialog.Builder(requireContext())
+        alertBuilder.setMessage(message)
+        alertBuilder.setTitle(title)
+        alertBuilder.setPositiveButton("OK"){ dialog, _ -> dialog.dismiss() }
+        alertBuilder.show()
     }
+
+    private fun changeColor(theme: Int, color: Int, activity: FragmentActivity?) {
+        this.requireContext().setTheme(theme)
+
+        requireActivity().recreate()
+        activity?.findViewById<Toolbar>(R.id.drawer_toolbar)?.setBackgroundColor(resources.getColor(color))
+
+        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
+        with(sharedPref?.edit()){
+            this?.putInt("THEME",theme)
+            this?.putInt("BACKGROUND",resources.getColor(color))
+            this?.commit()
+        }
+    }
+
+    private fun changeLanguage(
+        lang: String,
+        activity: FragmentActivity?
+    ) {
+        val locale = Locale(lang)
+        Locale.setDefault(locale)
+
+        val config = Configuration()
+        config.locale = locale
+
+        requireActivity().baseContext.resources.updateConfiguration(config,
+            requireActivity().baseContext.resources.displayMetrics)
+        requireActivity().recreate()
+
+        val sharedPref = activity?.getSharedPreferences("preferences",Context.MODE_PRIVATE)
+        with(sharedPref?.edit()){
+            this?.putString("LANG", lang)
+            this?.commit()
+        }
+    }
+}

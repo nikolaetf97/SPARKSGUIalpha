@@ -3,7 +3,7 @@
     <color name="colorPrimary">#2196F3</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#2196F3</color>
-    <color name="fabBackground">#4CAF50</color>
+    <color name="green">#4CAF50</color>
     <color name="red">#e03112</color>
     <color name="white">#ffffff</color>
     <color name="yellow">#FFEB3B</color>

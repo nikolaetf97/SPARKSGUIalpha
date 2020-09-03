@@ -21,12 +21,11 @@ import java.util.*
 abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
  protected lateinit var drawer: DrawerLayout
- //private var backPressed: Long = 0
 
  protected fun setup(
   layoutID: Int,
-  fab: FloatingActionButton?
- ){
+  fab: FloatingActionButton?)
+ {
   val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
   val lang = sharedPref.getString("LANG","sr")
   val locale = Locale(lang!!)
@@ -57,93 +56,57 @@ abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatAct
   toggle.syncState()
 
 
-  if(fab != null) fab.setBackgroundTintList(
-   ColorStateList.valueOf(sharedPref
-            .getInt("BACKGROUND",
-                resources.getColor(R.color.colorPrimary))))
+  fab?.backgroundTintList = ColorStateList.valueOf(sharedPref
+   .getInt("BACKGROUND",
+    resources.getColor(R.color.colorPrimary)))
  }
-
- /*override fun onBackPressed() {
-  if (drawer.isDrawerOpen(GravityCompat.START)) {
-   drawer.closeDrawer(GravityCompat.START)
-  } else {
-   val exitToast = Toast.makeText(baseContext, getString(R.string.exit_msg), Toast.LENGTH_SHORT)
-   if (backPressed + 2000 > System.currentTimeMillis()){
-
-    finishAffinity()
-   }
-   else{
-    exitToast.show()
-   }
-   backPressed = System.currentTimeMillis()
-  }
- }*/
 
  override fun onNavigationItemSelected(p0: MenuItem): Boolean {
   if (p0.itemId != itemId) {
-
    when (p0.itemId) {
 
-    R.id.nav_info -> startActivity(Intent(this, InformationActivity::class.java))
-
     R.id.nav_plates -> startActivity(Intent(this, PlatesActivity::class.java))
-
-    R.id.nav_profile -> startActivity(Intent(this, ProfileActivity::class.java))
 
     R.id.nav_settings -> startActivity(Intent(this, SettingsActivity::class.java))
 
     R.id.nav_home -> startActivity(Intent(this, MainActivity::class.java))
 
-    R.id.user_manual -> {
-     val alert= AlertDialog.Builder(this)
-     alert.setTitle(getString(R.string.how_to_use))
-     alert.setMessage(getString(R.string.how_to_use_value))
-     alert.setPositiveButton("OK"){dialog, which ->
-      dialog.dismiss()
-     }
-     alert.show()
-    }
     R.id.report_error -> {
      val builder = AlertDialog.Builder(this)
      val inflater = layoutInflater
+
      builder.setTitle(getString(R.string.error_info_value))
+
      val dialogLayout = inflater.inflate(R.layout.error_dialog, null)
      val editText  = dialogLayout.findViewById<EditText>(R.id.editText)
+
      builder.setView(dialogLayout)
-     builder.setPositiveButton("OK"){dialog, which ->
+     builder.setPositiveButton("OK"){ _, _ ->
       val emailIntent = Intent(Intent.ACTION_SEND)
-      emailIntent.setType("text/plain")
+
+      emailIntent.type = "text/plain"
       emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("spark-feedback@outlook.com"))
       emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback")
       emailIntent.putExtra(Intent.EXTRA_TEXT, editText.text)
-      emailIntent.setType("message/rfc822")
+      emailIntent.type = "message/rfc822"
+
       startActivity(Intent.createChooser(emailIntent, "Send email using..."))
      }
-     builder.show()
-    }
-
-    R.id.about -> {
-     var alert= AlertDialog.Builder(this)
-     alert.setTitle(getString(R.string.about_app))
-     alert.setMessage(getString(R.string.about_app_value))
-     alert.setPositiveButton("OK"){dialog,which->
-      dialog.dismiss()
-     }
-     alert.show()
-    }
+     builder.show()}
 
     R.id.nav_logs -> {
      val logsLayout = layoutInflater.inflate(R.layout.dialog_logs, null)
      val logsDialog = AlertDialog.Builder(this)
+
      logsDialog.setView(logsLayout)
      logsDialog.setTitle(getString(R.string.logovi))
+
      logsLayout.recycler_view.layoutManager = LinearLayoutManager(this)
      logsLayout.recycler_view.adapter = LogDataAdapter(this, LogDataSupplier.logData)
+
      logsDialog.setPositiveButton("Ok") { dialog, _ -> dialog.dismiss() }
      logsDialog.show()
-     return false
-    }
-   }
+     return false }}
 
    drawer.closeDrawer(GravityCompat.START, false)
 
@@ -158,8 +121,10 @@ abstract class NavigationBarActivity(private var itemId: Int = 0) : AppCompatAct
   val lang = sharedPref.getString("LANG","sr")
   val locale = Locale(lang!!)
   Locale.setDefault(locale)
+
   val config = Configuration()
   config.locale = locale
+
   baseContext.resources.updateConfiguration(config, baseContext.resources.displayMetrics)
 
   val toolbar = findViewById<Toolbar>(R.id.drawer_toolbar)

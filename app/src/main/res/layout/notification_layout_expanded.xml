@@ -3,21 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="72dp"
-    android:padding="12dp"
-    android:orientation="vertical">
+    android:background="#FFFFFF"
+    android:backgroundTint="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="12dp">
 
     <TextView
         android:id="@+id/chrono"
-        android:layout_width="128dp"
-        android:text="sample text"
-        android:layout_height="match_parent"
-        android:layout_marginRight="12dp"
-        android:layout_marginLeft="32dp"
         style="TextAppearance.Material.Notification.Time"
+        android:layout_width="128dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="32dp"
+        android:layout_marginRight="12dp"
+        android:text="sample text"
         android:textSize="24sp" />
 
     <Button
-        android:id="@+id/quickExtendTimer"
+        android:id="@+id/bt_extend"
         android:layout_width="wrap_content"
         android:layout_height="44dp"
         android:layout_marginTop="6dp"
@@ -29,11 +31,12 @@
         android:foregroundGravity="center" />
 
     <Button
+        android:id="@+id/bt_info"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:layout_marginRight="12dp"
-        android:layout_toRightOf="@+id/quickExtendTimer"
+        android:layout_toRightOf="@+id/bt_extend"
         android:clickable="true"
         android:foreground="@drawable/ic_hourglass_empty_black_24dp"
         android:foregroundGravity="center" />
