@@ -35,7 +35,7 @@ class SPARKService : Service() {
             makeText(applicationContext, "Udaljenost " + gCoord.distanceTo(MainActivity.DESTINATION!!.coordinate).toString(),
                 LENGTH_LONG).show()
 
-            if(gCoord.distanceTo(MainActivity.DESTINATION!!.coordinate) < 11){
+            if(gCoord.distanceTo(MainActivity.DESTINATION!!.coordinate) < 30){
                 arrivalTime = System.currentTimeMillis()
                 cost++
                 prepareCheckLeavingNotification()
@@ -58,7 +58,7 @@ class SPARKService : Service() {
             val currentLocation = p0!!.lastLocation
             val gCoord = GeoCoordinate(currentLocation.latitude, currentLocation.longitude, currentLocation.altitude)
 
-            if(gCoord.distanceTo(MainActivity.DESTINATION!!.coordinate) < 11){
+            if(gCoord.distanceTo(MainActivity.DESTINATION!!.coordinate) < 30){
                 enteredParking = true
             } else{
                 if(enteredParking){

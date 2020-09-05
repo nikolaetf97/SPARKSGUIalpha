@@ -6,7 +6,10 @@ import android.content.Intent
 import android.os.AsyncTask
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.util.Log
 import android.widget.Toast
+import androidx.preference.PreferenceManager
 import androidx.work.*
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.okhttp.Request
@@ -52,7 +55,11 @@ class GetPSpotsWorker(context: Context,
     override fun doWork(): Result {
         Thread.sleep(5000)
 
-        val result = getJSON()
+        val server_ip = PreferenceManager.getDefaultSharedPreferences(applicationContext).getString("server_ip", "def")
+
+        Log.d("pref", server_ip)
+
+        val result = getJSON(server_ip!!)
 
         val nextWorker = OneTimeWorkRequestBuilder<GetPSpotsWorker>().build()
         WorkManager
@@ -62,12 +69,38 @@ class GetPSpotsWorker(context: Context,
         return result
     }
 
-    private fun getJSON(): Result{
+    private fun getJSON(server_ip: String): Result{
         return try{
             val res = OkHttpClient().newCall(Request.Builder()
-                .url("http://192.168.0.104:8080/RestParking/api/service").build())
-                .execute().body().toString()
+                .url("http://$server_ip:8080/RestParking/api/service").build())
+                .execute().body().string()
 
+
+            val jsonArray= JSONArray(res)
+            for(i in 0 until jsonArray.length()) {
+                val jsonObject: JSONObject =
+                    jsonArray.getJSONObject(i)
+
+                val latitude = jsonObject.getJSONObject("destination").getDouble("latitude")
+                val longitude = jsonObject.getJSONObject("destination").getDouble("longitude")
+                val freeSpace = jsonObject.getInt("numberOfFreeSpace")
+                val space = jsonObject.getInt("numberOfSpace")
+                val name = jsonObject.getString("name")
+
+
+                val tmp = PSpot(longitude, latitude, space - freeSpace, space, name, 0)
+
+                if (PSpotSupplier.parkingSpots.contains(tmp)) {
+                    PSpotSupplier.setFreeSpaces(tmp)
+                } else
+                    PSpotSupplier.addPSpot(tmp)
+
+                for(ps in PSpotSupplier.parkingSpots){
+                    Log.d("succ", ps.toString())
+                }
+            }
+
+            Log.d("err", res)
             Result
                 .success(Data.Builder().putString("JSON", res)
                     .build())
@@ -103,20 +136,22 @@ class ProcessPSpotsWorker(context: Context,
         return try {
             val result = inputData.getString("JSON")
 
-            if(result != "ERROR")
+            if(result == "ERROR")
                 throw Exception("Error in worker data")
             else{
                 val jsonArray= JSONArray(result)
                 for(i in 0 until jsonArray.length()) {
-                    val destination: JSONObject =
-                        jsonArray.getJSONObject(i).getJSONObject("destination")
+                    val jsonObject: JSONObject =
+                        jsonArray.getJSONObject(i)
 
-                    val tmp = PSpot(
-                        destination.get("latitude").toString().toDouble(),
-                        destination.get("longitude").toString().toDouble(),
-                        destination.get("free_spaces").toString().toInt(),
-                        destination.get("spaces").toString().toInt(),
-                        destination.get("name").toString())
+                    val latitude = jsonObject.getJSONObject("destination").getDouble("latitude")
+                    val longitude = jsonObject.getJSONObject("destination").getDouble("longitude")
+                    val freeSpace = jsonObject.getInt("numberOfFreeSpace")
+                    val space = jsonObject.getInt("numberOfSpace")
+                    val name = jsonObject.getString("name")
+
+
+                    val tmp = PSpot(latitude, longitude, freeSpace, space, name, 0)
 
                     if (PSpotSupplier.parkingSpots.contains(tmp)) {
                         PSpotSupplier.setFreeSpaces(tmp)

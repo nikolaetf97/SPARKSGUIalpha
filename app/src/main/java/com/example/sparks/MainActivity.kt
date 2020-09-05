@@ -7,11 +7,14 @@ import android.graphics.PointF
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.GravityCompat
+import androidx.preference.Preference
+import androidx.preference.PreferenceManager
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.google.gson.Gson
@@ -32,6 +35,7 @@ import java.util.*
 class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
     companion object {
+        lateinit var server_ip: String
         var DESTINATION: MapMarker? = null
         var posManager: PositioningManager? = null
         var plates: String? = null
@@ -62,8 +66,10 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
         val sharedPref = getSharedPreferences("preferences", Context.MODE_PRIVATE)
 
-        loadData()
+        server_ip = PreferenceManager.getDefaultSharedPreferences(applicationContext).getString("server_ip", "def")!!
+        Log.d("maintag", server_ip)
 
+        loadData()
         context = applicationContext
 
         val platesName = ArrayList<String>()

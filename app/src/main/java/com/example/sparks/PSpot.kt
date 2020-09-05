@@ -2,6 +2,7 @@ package com.example.sparks
 
 import android.content.Context
 import android.os.Handler
+import android.util.Log
 import android.widget.Toast
 import com.here.android.mpa.common.GeoCoordinate
 import com.here.android.mpa.common.Image
@@ -25,6 +26,8 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
     @Transient
     private var marker: MapMarker = initMapMarker()
 
+
+    @Transient
     private var hasChanged = false
 
 
@@ -78,7 +81,8 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
         }
 
         marker.icon = image
-        marker.isVisible = false
+        if(!hasChanged)
+            marker.isVisible = false
     }
 
     fun getMarker(): MapMarker = marker
@@ -113,9 +117,11 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
         marker.icon = image
     }
 
-}
+    override fun toString(): String {
+        return name + " " + latitude.toString() + " " + longitude.toString()
+    }
 
-//TODO("44.818818, 17.210356 ce biti test lokacija ")
+}
 
 object PSpotSupplier{
 
@@ -141,6 +147,10 @@ object PSpotSupplier{
         numOfSpots: Int,
         coordinate: GeoCoordinate
     ): List<PSpot> {
+        for( spot in parkingSpots){
+            Log.d("spots", spot.toString())
+            spot.getMarker().isVisible = false
+        }
         val spots = parkingSpots.sortedBy {
                 parkingSpot ->  coordinate.distanceTo(parkingSpot.getMarker().coordinate)
         }.subList(0, numOfSpots)
@@ -172,6 +182,10 @@ object PSpotSupplier{
                 )
 
             parkingSpots.addAll(tmp)
+
+            for(ps in parkingSpots){
+                Log.d("init", ps.toString())
+            }
         }
     }
 
@@ -181,7 +195,8 @@ object PSpotSupplier{
             PSpot(44.817937, 17.216730, 100, 120, "Hiper Kort"),
             PSpot(44.816687, 17.211028, 50, 300, "FIS"),
             PSpot(44.799300, 17.207989, 12, 100, "Zoki Komerc"),
-            PSpot(44.819054, 17.210573, 8, 12, "Test"))
+            PSpot(44.819054, 17.210573, 8, 12, "Test"),
+            PSpot(44.766756, 17.1872528, 3, 12, "Test2"))
 
         val tmp = Json{}
             .encodeToString(SetSerializer(PSpot.serializer()),
@@ -193,12 +208,9 @@ object PSpotSupplier{
 
     fun setFreeSpaces(t:PSpot){
         val ps = parkingSpots.find { spot -> spot == t }
-        ps!!.freeSpace = t.freeSpace
-        Handler().postDelayed({
-            map!!.removeMapObject(ps!!.getMarker())
-            map!!.addMapObject(ps!!.getMarker())
-        },
-            1000)
 
+        ps!!.setFreeSpaces(t.freeSpace)
+        map!!.removeMapObject(ps!!.getMarker())
+        map!!.addMapObject(ps!!.getMarker())
     }
 }

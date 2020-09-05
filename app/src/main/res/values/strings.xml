@@ -89,4 +89,5 @@
     <string name="arrival_time">"Vrijeme dolaska: "</string>
     <string name="cost">"Cijena: "</string>
     <string name="info_tv_period">"Period: "</string>
+    <string name="server_ip">IP adresa servera</string>
 </resources>

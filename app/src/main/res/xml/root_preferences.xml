@@ -36,6 +36,12 @@
             app:title="@string/color_title"
             app:useSimpleSummaryProvider="true" />
 
+        <EditTextPreference
+            app:defaultValue="10.99.175.157"
+            android:key="server_ip"
+            android:icon="@drawable/ic_baseline_wifi_24"
+            android:title="@string/server_ip"/>
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/info">

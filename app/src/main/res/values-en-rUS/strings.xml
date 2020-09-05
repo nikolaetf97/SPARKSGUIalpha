@@ -67,4 +67,5 @@
     <string name="arrival_time">"Arrival time: "</string>
     <string name="cost">"Cost: "</string>
     <string name="info_tv_period">"Period: "</string>
+    <string name="server_ip">IP adresa servera</string>
 </resources>

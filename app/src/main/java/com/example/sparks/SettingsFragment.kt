@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.WindowManager
 import android.widget.EditText
@@ -19,47 +20,51 @@ import java.util.*
 class SettingsFragment : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey)
-            val uputstvoPreference:Preference?=findPreference("uputstvo")
 
-            uputstvoPreference?.setOnPreferenceClickListener {
-                showDialog(getString(R.string.how_to_use), getString(R.string.how_to_use_value))
-                true
-            }
-            
-            val oAplikaciji:Preference?=findPreference("o aplikaciji")
-            oAplikaciji?.setOnPreferenceClickListener {
-                showDialog(getString(R.string.about_app), getString(R.string.about_app_value))
-                true
-            }
-
-            val language:Preference?=findPreference("language")
-
-            language?.setOnPreferenceChangeListener { _, newValue ->
-                when(newValue.toString()) {
-                    "English" -> changeLanguage("en", activity)
-                    "Srpski" -> changeLanguage("sr", activity)
+            findPreference<Preference?>("uputstvo")!!
+                .setOnPreferenceClickListener {
+                    showDialog(getString(R.string.how_to_use), getString(R.string.how_to_use_value))
+                    true
                 }
 
-                true
-            }
-
-            val color:Preference?=findPreference("color")
-
-            color?.setOnPreferenceChangeListener { _, newValue ->
-                ResourcesCompat.getColor(this.resources,R.color.colorPrimary,null)
-                when(newValue.toString()){
-                    getString(R.string.blue)-> changeColor(R.style.AppTheme, R.color.colorPrimary, activity)
-
-                    getString(R.string.green)-> changeColor(R.style.GreenTheme, R.color.green, activity)
-
-                    getString(R.string.red)-> changeColor(R.style.RedTheme, R.color.red, activity)
-
-                    getString(R.string.yellow)-> changeColor(R.style.YellowTheme, R.color.yellow, activity)
-
-                    getString(R.string.pink)-> changeColor(R.style.PinkTheme, R.color.pink, activity)
-
+            findPreference<Preference?>("o aplikaciji")!!
+                .setOnPreferenceClickListener {
+                    showDialog(getString(R.string.about_app), getString(R.string.about_app_value))
+                    true
                 }
 
+            findPreference<Preference?>("language")!!
+                .setOnPreferenceChangeListener { _, newValue ->
+                    when(newValue.toString()) {
+                        "English" -> changeLanguage("en", activity)
+                        "Srpski" -> changeLanguage("sr", activity)
+                    }
+
+                    true
+                }
+
+            findPreference<Preference?>("color")!!
+                .setOnPreferenceChangeListener { _, newValue ->
+                    ResourcesCompat.getColor(this.resources,R.color.colorPrimary,null)
+                    when(newValue.toString()){
+                        getString(R.string.blue)-> changeColor(R.style.AppTheme, R.color.colorPrimary, activity)
+
+                        getString(R.string.green)-> changeColor(R.style.GreenTheme, R.color.green, activity)
+
+                        getString(R.string.red)-> changeColor(R.style.RedTheme, R.color.red, activity)
+
+                        getString(R.string.yellow)-> changeColor(R.style.YellowTheme, R.color.yellow, activity)
+
+                        getString(R.string.pink)-> changeColor(R.style.PinkTheme, R.color.pink, activity)
+
+                    }
+
+                    true
+                }
+
+            findPreference<Preference?>("server_ip")!!.setOnPreferenceChangeListener{ _, newValue ->
+                MainActivity.server_ip = newValue.toString()
+                Log.d("maintag", MainActivity.server_ip)
                 true
             }
         }
