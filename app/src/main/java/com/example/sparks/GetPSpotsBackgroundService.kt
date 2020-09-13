@@ -17,7 +17,7 @@ import com.squareup.okhttp.Response
 import org.json.JSONArray
 import org.json.JSONObject
 
-class GetPSpotsBackgroundService : Service() {
+/*class GetPSpotsBackgroundService : Service() {
     private var handler: Handler? = null
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -46,7 +46,7 @@ class GetPSpotsBackgroundService : Service() {
     companion object {
         var runnable: Runnable? = null
     }
-}
+}*/
 
 class GetPSpotsWorker(context: Context,
                 workerParams: WorkerParameters)
@@ -88,19 +88,17 @@ class GetPSpotsWorker(context: Context,
                 val name = jsonObject.getString("name")
 
 
-                val tmp = PSpot(longitude, latitude, space - freeSpace, space, name, 0)
+                val tmp = PSpot(longitude, latitude, freeSpace, space, name, 0)
+
+                Log.d(tmp.name, tmp.toString())
 
                 if (PSpotSupplier.parkingSpots.contains(tmp)) {
                     PSpotSupplier.setFreeSpaces(tmp)
+                    Log.d(tmp.name, "ssuccess")
                 } else
                     PSpotSupplier.addPSpot(tmp)
-
-                for(ps in PSpotSupplier.parkingSpots){
-                    Log.d("succ", ps.toString())
-                }
             }
 
-            Log.d("err", res)
             Result
                 .success(Data.Builder().putString("JSON", res)
                     .build())
@@ -175,7 +173,7 @@ class ProcessPSpotsWorker(context: Context,
     }
 }
 
-object GetPSpotsTask: AsyncTask<Unit, Unit, String>(){
+/*object GetPSpotsTask: AsyncTask<Unit, Unit, String>() {
 
     override fun doInBackground(vararg params: Unit?): String? {
         val client = OkHttpClient()
@@ -205,7 +203,7 @@ object GetPSpotsTask: AsyncTask<Unit, Unit, String>(){
 
     override fun onPostExecute(result: String?) {
 
-        /*if(result!=null){
+        if(result!=null){
             //ovde treba to procitati JSON
 
             val jsonArray= JSONArray(result)
@@ -247,6 +245,6 @@ object GetPSpotsTask: AsyncTask<Unit, Unit, String>(){
             }
             //var jsonOObj:List<JSONObject>=List<JSONObject>(result);
             //text2.setText(jsonOObj.length());
-        }*/
+        }
     }
-}
+}*/

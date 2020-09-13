@@ -70,14 +70,14 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
         val tmp = freeSpace.toDouble() / space.toDouble()
 
         if (tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_large_green)
-            marker.description = R.drawable.parking_pin_large_green.toString()
+            image.setImageResource(R.drawable.parking_pin_large_red)
+            marker.description = R.drawable.parking_pin_large_red.toString()
         } else if (tmp < 0.5){
             image.setImageResource(R.drawable.parking_pin_large_yellow)
             marker.description = R.drawable.parking_pin_large_yellow.toString()
         } else {
-            image.setImageResource(R.drawable.parking_pin_large_red)
-            marker.description = R.drawable.parking_pin_large_red.toString()
+            image.setImageResource(R.drawable.parking_pin_large_green)
+            marker.description = R.drawable.parking_pin_large_green.toString()
         }
 
         marker.icon = image
@@ -92,11 +92,11 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
         val image = Image()
 
         if (tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_large_green)
+            image.setImageResource(R.drawable.parking_pin_large_red)
         } else if (tmp < 0.5){
             image.setImageResource(R.drawable.parking_pin_large_yellow)
         } else {
-            image.setImageResource(R.drawable.parking_pin_large_red)
+            image.setImageResource(R.drawable.parking_pin_large_green)
         }
 
         marker.icon = image
@@ -107,18 +107,18 @@ data class PSpot(val latitude:Double, val longitude:Double, var freeSpace: Int, 
         val image = Image()
 
         if (tmp < 0.25){
-            image.setImageResource(R.drawable.parking_pin_larger_green)
+            image.setImageResource(R.drawable.parking_pin_larger_red)
         } else if (tmp < 0.5){
             image.setImageResource(R.drawable.parking_pin_larger_yellow)
         } else {
-            image.setImageResource(R.drawable.parking_pin_larger_red)
+            image.setImageResource(R.drawable.parking_pin_larger_green)
         }
 
         marker.icon = image
     }
 
     override fun toString(): String {
-        return name + " " + latitude.toString() + " " + longitude.toString()
+        return name + " " + latitude.toString() + " " + longitude.toString() + " " + freeSpace.toString() + " " + space.toString()
     }
 
 }
@@ -208,6 +208,8 @@ object PSpotSupplier{
 
     fun setFreeSpaces(t:PSpot){
         val ps = parkingSpots.find { spot -> spot == t }
+
+        Log.d(ps!!.name, "asdasdas")
 
         ps!!.setFreeSpaces(t.freeSpace)
         map!!.removeMapObject(ps!!.getMarker())

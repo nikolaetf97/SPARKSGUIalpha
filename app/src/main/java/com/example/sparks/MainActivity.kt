@@ -263,13 +263,16 @@ class MainActivity : NavigationBarActivity(R.id.nav_home) {
 
             override fun onMapObjectsSelected(p0: MutableList<ViewObject>): Boolean {
                 for (viewObject in p0) {
-                    if ((viewObject as MapObject).type == MapObject.Type.MARKER && (viewObject as MapMarker) != lastPos) {
+
+                    if (viewObject is MapObject && viewObject.type == MapObject.Type.MARKER && (viewObject as MapMarker) != lastPos) {
                         if (pastOverlay != null)
                             map!!.removeMapOverlay(pastOverlay!!)
 
                         val spots = PSpotSupplier.parkingSpots.filter { spot -> spot.getMarker() == viewObject }
                         if (spots.isNotEmpty()) {
                             val spot = spots[0]
+
+                            Log.d(spot.name, spot.toString())
 
                             val view = layoutInflater.inflate(R.layout.infobubble, null)
 
